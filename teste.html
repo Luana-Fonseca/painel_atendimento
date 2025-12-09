@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Teste Sistema</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        button { margin: 10px; padding: 10px 20px; }
+        #resultado { margin-top: 20px; padding: 15px; border: 2px solid #ccc; }
+    </style>
+</head>
+<body>
+    <h1>🔧 TESTE DO SISTEMA DE TICKETS</h1>
+    
+    <button onclick="testarCarregamento()">1️⃣ Testar Carregamento</button>
+    <button onclick="testarLocalStorage()">2️⃣ Testar LocalStorage</button>
+    <button onclick="testarTicketSystem()">3️⃣ Testar TicketSystem</button>
+    <button onclick="limparTudo()">🧹 Limpar Tudo</button>
+    
+    <div id="resultado"></div>
+    
+    <script>
+        function testarCarregamento() {
+            const resultado = document.getElementById('resultado');
+            resultado.innerHTML = '<h3>📊 Status do Sistema:</h3>';
+            
+            // Testar scripts.js
+            resultado.innerHTML += `<p>🔍 scripts.js: ${typeof scripts !== 'undefined' ? '✅ Carregado' : '❌ Não encontrado'}</p>`;
+            
+            // Testar TicketSystem
+            resultado.innerHTML += `<p>🎫 TicketSystem: ${typeof TicketSystem !== 'undefined' ? '✅ Disponível' : '❌ Indefinido'}</p>`;
+            
+            // Testar localStorage
+            resultado.innerHTML += `<p>💾 localStorage: ${typeof localStorage !== 'undefined' ? '✅ Disponível' : '❌ Não disponível'}</p>`;
+            
+            // Testar AudioContext
+            resultado.innerHTML += `<p>🔊 AudioContext: ${typeof (window.AudioContext || window.webkitAudioContext) !== 'undefined' ? '✅ Disponível' : '❌ Não disponível'}</p>`;
+        }
+        
+        function testarLocalStorage() {
+            const resultado = document.getElementById('resultado');
+            resultado.innerHTML = '<h3>💾 Teste LocalStorage:</h3>';
+            
+            try {
+                // Salvar teste
+                localStorage.setItem('teste_sistema', 'valor_teste_' + Date.now());
+                
+                // Ler teste
+                const valor = localStorage.getItem('teste_sistema');
+                resultado.innerHTML += `<p>Salvamento: ✅ Funcionou (${valor})</p>`;
+                
+                // Verificar dados do sistema
+                const dados = localStorage.getItem('ticketSystem');
+                if (dados) {
+                    resultado.innerHTML += `<p>Sistema de tickets: ✅ Tem dados salvos</p>`;
+                } else {
+                    resultado.innerHTML += `<p>Sistema de tickets: 📭 Sem dados salvos</p>`;
+                }
+                
+            } catch (e) {
+                resultado.innerHTML += `<p>❌ Erro: ${e.message}</p>`;
+            }
+        }
+        
+        function testarTicketSystem() {
+            const resultado = document.getElementById('resultado');
+            resultado.innerHTML = '<h3>🎫 Teste TicketSystem:</h3>';
+            
+            if (typeof TicketSystem !== 'undefined') {
+                resultado.innerHTML += `<p>✅ Classe TicketSystem encontrada</p>`;
+                
+                // Testar métodos
+                resultado.innerHTML += `<p>• init(): ${typeof TicketSystem.init === 'function' ? '✅' : '❌'}</p>`;
+                resultado.innerHTML += `<p>• emitirTicket(): ${typeof TicketSystem.emitirTicket === 'function' ? '✅' : '❌'}</p>`;
+                resultado.innerHTML += `<p>• showAlert(): ${typeof TicketSystem.showAlert === 'function' ? '✅' : '❌'}</p>`;
+                
+                // Tentar inicializar
+                try {
+                    TicketSystem.init();
+                    resultado.innerHTML += `<p>🔧 Inicialização: ✅ Bem-sucedida</p>`;
+                } catch (e) {
+                    resultado.innerHTML += `<p>❌ Erro na inicialização: ${e.message}</p>`;
+                }
+            } else {
+                resultado.innerHTML += `<p>❌ TicketSystem NÃO definido!</p>`;
+                
+                // Tentar carregar manualmente
+                resultado.innerHTML += `<p>📥 Tentando carregar scripts.js manualmente...</p>`;
+                
+                const script = document.createElement('script');
+                script.src = 'scripts.js';
+                script.onload = function() {
+                    resultado.innerHTML += `<p>✅ scripts.js carregado manualmente!</p>`;
+                    if (typeof TicketSystem !== 'undefined') {
+                        resultado.innerHTML += `<p>✅ TicketSystem agora está disponível!</p>`;
+                    }
+                };
+                script.onerror = function() {
+                    resultado.innerHTML += `<p>❌ Não foi possível carregar scripts.js</p>`;
+                };
+                document.head.appendChild(script);
+            }
+        }
+        
+        function limparTudo() {
+            localStorage.clear();
+            document.getElementById('resultado').innerHTML = '<p>🧹 Tudo limpo!</p>';
+        }
+    </script>
+    
+    <!-- Carregar scripts.js -->
+    <script src="scripts.js"></script>
+    
+    <script>
+        // Log inicial
+        console.log('🔍 TESTE.HTML - Scripts carregando...');
+        console.log('TicketSystem definido?', typeof TicketSystem !== 'undefined');
+        
+        // Inicializar quando carregar
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('📄 TESTE.HTML - DOM carregado');
+            if (typeof TicketSystem !== 'undefined') {
+                console.log('✅ TicketSystem disponível, inicializando...');
+                TicketSystem.init();
+            }
+        });
+    </script>
+</body>
+</html>

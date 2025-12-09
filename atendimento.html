@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SISTEMA COMPLETO DE ATENDIMENTO</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        /* ===== ESTILOS COMPLETOS ===== */
+        .header-painel {
+            background: linear-gradient(135deg, #2c3e50 0%, #4a6491 100%);
+            color: white;
+            padding: 2rem 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .ticket-preview {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+            display: none;
+        }
+        
+        .ticket-preview.show {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .preview-ticket-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #FFD700;
+        }
+        
+        .badge-tecnico {
+            background: linear-gradient(45deg, #FFA500, #FF8C00);
+            color: #333;
+        }
+        
+        .badge-financeiro {
+            background: linear-gradient(45deg, #28A745, #20C997);
+            color: white;
+        }
+        
+        .badge-comercial {
+            background: linear-gradient(45deg, #007BFF, #6610F2);
+            color: white;
+        }
+        
+        .badge-prioridade {
+            background: linear-gradient(45deg, #DC3545, #C82333);
+            color: white;
+        }
+        
+        .system-alert {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            min-width: 300px;
+            animation: slideInRight 0.5s;
+            display: none;
+        }
+        
+        .system-alert.show {
+            display: block;
+        }
+        
+        @keyframes slideInRight {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        .history-row:hover {
+            background-color: rgba(0, 123, 255, 0.05);
+            transform: translateX(5px);
+        }
+        
+        .status-chamando {
+            animation: pulse 1s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <header class="header-painel text-center">
+        <h1><i class="bi bi-gear-fill"></i> PAINEL DE CONTROLE - OPERADOR</h1>
+        <p class="lead">Sistema de Gerenciamento de Tickets</p>
+    </header>
+
+    <div class="container py-4">
+        <!-- Sistema de Alertas -->
+        <div id="systemAlert" class="system-alert alert alert-success">
+            <div class="d-flex align-items-center">
+                <i class="bi bi-check-circle-fill me-2 fs-5"></i>
+                <div id="alertMessage">Sistema iniciado com sucesso!</div>
+                <button type="button" class="btn-close ms-auto" onclick="hideAlert()"></button>
+            </div>
+        </div>
+        
+        <div class="row g-4">
+            
+            <!-- COLUNA ESQUERDA: EMISSÃO DE TICKETS -->
+            <div class="col-lg-6">
+                <div class="card shadow">
+                    <div class="card-header bg-primary text-white">
+                        <i class="bi bi-ticket-detailed"></i> EMISSÃO DE TICKETS
+                    </div>
+                    <div class="card-body">
+                        <form id="formEmissaoTicket">
+                            <div class="mb-3">
+                                <label class="form-label"><i class="bi bi-tag"></i> Tipo de Atendimento:</label>
+                                <select class="form-select" id="tipoTicket" required>
+                                    <option value="">Selecione...</option>
+                                    <option value="T">🛠️ Técnico</option>
+                                    <option value="F">💰 Financeiro</option>
+                                    <option value="C">🤝 Comercial</option>
+                                    <option value="P">⚡ Prioridade</option>
+                                </select>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label class="form-label"><i class="bi bi-geo-alt"></i> Guichê de Atendimento:</label>
+                                <select class="form-select" id="guicheAtendimento" required>
+                                    <option value="1">Guichê 1</option>
+                                    <option value="2">Guichê 2</option>
+                                    <option value="3">Guichê 3</option>
+                                    <option value="4" selected>Guichê 4</option>
+                                    <option value="5">Guichê 5</option>
+                                </select>
+                            </div>
+                            
+                            <!-- PRÉ-VISUALIZAÇÃO -->
+                            <div id="ticketPreview" class="ticket-preview">
+                                <div class="text-center">
+                                    <h5 class="mb-2">PRÉ-VISUALIZAÇÃO DO TICKET</h5>
+                                    <div class="preview-ticket-number" id="previewNumber">T-000</div>
+                                    <p class="mb-1">Categoria: <span id="previewCategory">Técnico</span></p>
+                                    <p class="mb-0">Guichê: <strong id="previewGuiche">4</strong></p>
+                                </div>
+                            </div>
+                            
+                            <div class="d-grid gap-2 mt-3">
+                                <button type="submit" class="btn btn-success btn-lg">
+                                    <i class="bi bi-megaphone"></i> EMITIR E CHAMAR TICKET
+                                </button>
+                                <button type="button" id="btnApenasEmitir" class="btn btn-primary btn-lg">
+                                    <i class="bi bi-plus-circle"></i> APENAS EMITIR TICKET
+                                </button>
+                            </div>
+                        </form>
+                        
+                        <div class="mt-4">
+                            <h6><i class="bi bi-info-circle"></i> Último Ticket Emitido:</h6>
+                            <div class="alert alert-info" id="ultimoTicket">
+                                <div class="text-center py-3">
+                                    <i class="bi bi-ticket-perforated display-6 text-muted"></i>
+                                    <p class="mt-2 mb-0 text-muted">Nenhum ticket emitido ainda</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- COLUNA DIREITA: CONTROLES E ESTATÍSTICAS -->
+            <div class="col-lg-6">
+                <div class="card shadow">
+                    <div class="card-header bg-secondary text-white">
+                        <i class="bi bi-graph-up"></i> CONTROLES E ESTATÍSTICAS
+                    </div>
+                    <div class="card-body">
+                        <div class="row text-center mb-4">
+                            <div class="col-6">
+                                <div class="p-3 bg-light rounded">
+                                    <h5 class="text-primary">TICKETS HOJE</h5>
+                                    <h2 id="totalTickets" class="mb-0">0</h2>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="p-3 bg-light rounded">
+                                    <h5 class="text-success">EM ESPERA</h5>
+                                    <h2 id="ticketsEspera" class="mb-0">0</h2>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row text-center mb-4">
+                            <div class="col-3">
+                                <div class="p-2">
+                                    <h6 class="text-warning">TÉCNICO</h6>
+                                    <h4 id="statTecnico" class="mb-0">0</h4>
+                                </div>
+                            </div>
+                            <div class="col-3">
+                                <div class="p-2">
+                                    <h6 class="text-success">FINANCEIRO</h6>
+                                    <h4 id="statFinanceiro" class="mb-0">0</h4>
+                                </div>
+                            </div>
+                            <div class="col-3">
+                                <div class="p-2">
+                                    <h6 class="text-primary">COMERCIAL</h6>
+                                    <h4 id="statComercial" class="mb-0">0</h4>
+                                </div>
+                            </div>
+                            <div class="col-3">
+                                <div class="p-2">
+                                    <h6 class="text-danger">PRIORIDADE</h6>
+                                    <h4 id="statPrioridade" class="mb-0">0</h4>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <h6><i class="bi bi-list-check"></i> Ações Rápidas:</h6>
+                            <div class="d-flex flex-wrap gap-2">
+                                <button class="btn btn-outline-warning" id="btnRechamar">
+                                    <i class="bi bi-arrow-repeat"></i> Rechamar Último
+                                </button>
+                                <button class="btn btn-outline-danger" id="btnCancelar">
+                                    <i class="bi bi-x-circle"></i> Cancelar Ticket
+                                </button>
+                                <button class="btn btn-outline-info" id="btnPausar">
+                                    <i class="bi bi-pause-circle"></i> Pausar Atendimento
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label"><i class="bi bi-volume-up"></i> Volume do Som:</label>
+                            <input type="range" class="form-range" id="volumeSom" min="0" max="100" value="70">
+                            <div class="d-flex justify-content-between">
+                                <small>0%</small>
+                                <small id="volumeValue">70%</small>
+                                <small>100%</small>
+                            </div>
+                        </div>
+                        
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-outline-dark" onclick="window.open('atendimento2.html', '_blank')">
+                                <i class="bi bi-display"></i> Abrir Painel Público (Manual)
+                            </button>
+                            <button class="btn btn-outline-dark" onclick="window.open('atendimento3.html', '_blank')">
+                                <i class="bi bi-play-circle"></i> Abrir Painel Automático
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- HISTÓRICO DE ATENDIMENTOS -->
+            <div class="col-12">
+                <div class="card shadow">
+                    <div class="card-header bg-dark text-white">
+                        <i class="bi bi-clock-history"></i> HISTÓRICO RECENTE DE ATENDIMENTOS
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Ticket</th>
+                                        <th>Guichê</th>
+                                        <th>Hora Emissão</th>
+                                        <th>Hora Chamada</th>
+                                        <th>Status</th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="historicoTickets">
+                                    <tr>
+                                        <td colspan="6" class="text-center text-muted py-4">
+                                            <i class="bi bi-inbox"></i> Nenhum ticket no histórico
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+
+    <footer class="text-center py-3 mt-4 border-top">
+        <p class="text-muted">
+            <i class="bi bi-shield-check"></i> Sistema de Atendimento v2.0 | 
+            <span id="statusConexao" class="badge bg-success">Online</span>
+            <span id="ticketCounterFooter" class="badge bg-primary ms-2">Tickets: 0</span>
+        </p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // ===== SISTEMA DE TICKETS COMPLETO EM UM ARQUIVO =====
+        console.log('🚀 SISTEMA DE TICKETS INICIANDO...');
+        
+        // ===== SISTEMA DE ALERTAS =====
+        window.showAlert = function(message, type = 'info') {
+            const alert = document.getElementById('systemAlert');
+            const messageEl = document.getElementById('alertMessage');
+            const icon = alert.querySelector('i');
+            
+            if (alert && messageEl) {
+                alert.className = 'system-alert alert alert-' + type + ' show';
+                messageEl.textContent = message;
+                
+                icon.className = 'bi me-2 fs-5';
+                switch(type) {
+                    case 'success': icon.classList.add('bi-check-circle-fill'); break;
+                    case 'warning': icon.classList.add('bi-exclamation-triangle-fill'); break;
+                    case 'danger': icon.classList.add('bi-x-circle-fill'); break;
+                    default: icon.classList.add('bi-info-circle-fill');
+                }
+                
+                setTimeout(hideAlert, 5000);
+            } else {
+                alert(message);
+            }
+        };
+        
+        window.hideAlert = function() {
+            const alert = document.getElementById('systemAlert');
+            if (alert) {
+                alert.classList.remove('show');
+            }
+        };
+        
+        // ===== TICKET SYSTEM =====
+        window.TicketSystem = {
+            contadores: { T: 100, F: 100, C: 100, P: 100 },
+            tickets: [],
+            currentTicket: null,
+            
+            init: function() {
+                console.log('✅ TicketSystem.init()');
+                
+                // Carregar dados
+                this.loadFromStorage();
+                
+                // Configurar eventos
+                this.setupEventListeners();
+                
+                // Atualizar interface
+                this.atualizarInterface();
+                
+                // Mostrar alerta
+                showAlert('Sistema de Tickets carregado com sucesso!', 'success');
+                
+                return this;
+            },
+            
+            setupEventListeners: function() {
+                console.log('🔧 Configurando eventos...');
+                
+                // Formulário
+                const form = document.getElementById('formEmissaoTicket');
+                if (form) {
+                    form.addEventListener('submit', (e) => {
+                        e.preventDefault();
+                        this.emitirTicket(true);
+                    });
+                }
+                
+                // Botão "Apenas Emitir"
+                const btnEmitir = document.getElementById('btnApenasEmitir');
+                if (btnEmitir) {
+                    btnEmitir.addEventListener('click', () => {
+                        this.emitirTicket(false);
+                    });
+                }
+                
+                // Botão Rechamar
+                const btnRechamar = document.getElementById('btnRechamar');
+                if (btnRechamar) {
+                    btnRechamar.addEventListener('click', () => {
+                        this.rechamarUltimo();
+                    });
+                }
+                
+                // Botão Cancelar
+                const btnCancelar = document.getElementById('btnCancelar');
+                if (btnCancelar) {
+                    btnCancelar.addEventListener('click', () => {
+                        this.cancelarTicket();
+                    });
+                }
+                
+                // Botão Pausar
+                const btnPausar = document.getElementById('btnPausar');
+                if (btnPausar) {
+                    let pausado = false;
+                    btnPausar.addEventListener('click', function() {
+                        pausado = !pausado;
+                        if (pausado) {
+                            this.innerHTML = '<i class="bi bi-play-circle"></i> Retomar Sistema';
+                            this.classList.remove('btn-outline-info');
+                            this.classList.add('btn-warning');
+                            showAlert('Sistema pausado', 'warning');
+                        } else {
+                            this.innerHTML = '<i class="bi bi-pause-circle"></i> Pausar Sistema';
+                            this.classList.remove('btn-warning');
+                            this.classList.add('btn-outline-info');
+                            showAlert('Sistema retomado', 'success');
+                        }
+                    });
+                }
+            },
+            
+            emitirTicket: function(chamar = true) {
+                console.log('🎫 emitirTicket()');
+                
+                const tipoSelect = document.getElementById('tipoTicket');
+                const guicheSelect = document.getElementById('guicheAtendimento');
+                
+                if (!tipoSelect || !guicheSelect) {
+                    showAlert('Erro: Formulário não encontrado', 'danger');
+                    return;
+                }
+                
+                const tipo = tipoSelect.value;
+                const guiche = guicheSelect.value;
+                
+                if (!tipo) {
+                    showAlert('Selecione um tipo de atendimento', 'warning');
+                    tipoSelect.focus();
+                    return;
+                }
+                
+                // Incrementar contador
+                const numero = ++this.contadores[tipo];
+                
+                // Criar ticket
+                const ticket = {
+                    id: `${tipo}-${numero.toString().padStart(3, '0')}`,
+                    tipo: tipo,
+                    numero: numero,
+                    guiche: parseInt(guiche),
+                    timestamp: new Date().toISOString(),
+                    chamado: chamar,
+                    status: chamar ? 'chamando' : 'aguardando',
+                    atendido: false,
+                    horaChamada: chamar ? new Date().toISOString() : null
+                };
+                
+                console.log('✅ Ticket criado:', ticket);
+                
+                // Adicionar à lista
+                this.tickets.unshift(ticket);
+                this.currentTicket = ticket;
+                
+                // Salvar
+                this.saveToStorage();
+                
+                // Atualizar interface
+                this.atualizarInterface();
+                
+                // Mostrar alerta
+                showAlert(`Ticket ${ticket.id} emitido para Guichê ${guiche}!`, 'success');
+                
+                // Se for para chamar
+                if (chamar) {
+                    this.chamarTicket(ticket);
+                }
+                
+                // Atualizar contador da fila
+                this.atualizarContadorFila();
+                
+                return ticket;
+            },
+            
+            chamarTicket: function(ticket) {
+                console.log(`📢 chamarTicket(): ${ticket.id}`);
+                
+                ticket.status = 'chamando';
+                ticket.chamado = true;
+                ticket.horaChamada = new Date().toISOString();
+                
+                // Salvar no localStorage para painéis
+                localStorage.setItem('currentTicket', JSON.stringify(ticket));
+                
+                // Salvar no sistema
+                this.saveToStorage();
+                
+                // Atualizar interface
+                this.atualizarInterface();
+                
+                // Disparar evento
+                this.dispatchTicketEvent(ticket);
+                
+                // Marcar como atendido após 30 segundos
+                setTimeout(() => {
+                    if (ticket.status === 'chamando') {
+                        ticket.status = 'atendido';
+                        ticket.atendido = true;
+                        this.saveToStorage();
+                        this.atualizarInterface();
+                        console.log(`✅ ${ticket.id} atendido`);
+                    }
+                }, 30000);
+            },
+            
+            dispatchTicketEvent: function(ticket) {
+                const event = new CustomEvent('ticketChamado', {
+                    detail: { ticket: ticket }
+                });
+                window.dispatchEvent(event);
+            },
+            
+            rechamarUltimo: function() {
+                if (!this.currentTicket) {
+                    showAlert('Nenhum ticket para rechamar', 'warning');
+                    return;
+                }
+                
+                console.log(`🔄 Rechamando: ${this.currentTicket.id}`);
+                this.chamarTicket(this.currentTicket);
+                showAlert(`Rechamando ${this.currentTicket.id}...`, 'info');
+            },
+            
+            cancelarTicket: function() {
+                if (!this.currentTicket) {
+                    showAlert('Nenhum ticket ativo', 'warning');
+                    return;
+                }
+                
+                if (confirm(`Cancelar ticket ${this.currentTicket.id}?`)) {
+                    this.currentTicket.status = 'cancelado';
+                    this.saveToStorage();
+                    this.atualizarInterface();
+                    showAlert(`Ticket ${this.currentTicket.id} cancelado`, 'info');
+                }
+            },
+            
+            atualizarInterface: function() {
+                console.log('🔄 atualizarInterface()');
+                
+                this.atualizarUltimoTicket();
+                this.atualizarHistorico();
+                this.atualizarEstatisticas();
+                this.atualizarContadorFila();
+            },
+            
+            atualizarUltimoTicket: function() {
+                const element = document.getElementById('ultimoTicket');
+                if (!element) return;
+                
+                if (this.currentTicket) {
+                    const ticket = this.currentTicket;
+                    const hora = new Date(ticket.timestamp).toLocaleTimeString('pt-BR', {
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    });
+                    
+                    element.innerHTML = `
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <span class="badge ${this.getBadgeClass(ticket.tipo)} fs-6">
+                                    ${ticket.id}
+                                </span>
+                                <div class="mt-2">
+                                    <small class="text-muted">
+                                        <i class="bi bi-clock"></i> ${hora} |
+                                        <i class="bi bi-geo-alt"></i> Guichê ${ticket.guiche}
+                                    </small>
+                                </div>
+                            </div>
+                            <span class="badge ${this.getStatusClass(ticket.status)}">
+                                ${this.getStatusText(ticket.status)}
+                            </span>
+                        </div>
+                    `;
+                }
+            },
+            
+            atualizarHistorico: function() {
+                const tbody = document.getElementById('historicoTickets');
+                if (!tbody) return;
+                
+                const ultimosTickets = this.tickets.slice(0, 10);
+                
+                if (ultimosTickets.length === 0) {
+                    tbody.innerHTML = `
+                        <tr>
+                            <td colspan="6" class="text-center text-muted py-4">
+                                <i class="bi bi-inbox"></i> Nenhum ticket no histórico
+                            </td>
+                        </tr>
+                    `;
+                    return;
+                }
+                
+                let html = '';
+                ultimosTickets.forEach(ticket => {
+                    const horaEmissao = new Date(ticket.timestamp).toLocaleTimeString('pt-BR', {
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    });
+                    
+                    const horaChamada = ticket.horaChamada 
+                        ? new Date(ticket.horaChamada).toLocaleTimeString('pt-BR', {
+                            hour: '2-digit',
+                            minute: '2-digit'
+                        })
+                        : '-';
+                    
+                    html += `
+                        <tr class="history-row">
+                            <td>
+                                <span class="badge ${this.getBadgeClass(ticket.tipo)}">
+                                    ${ticket.id}
+                                </span>
+                            </td>
+                            <td><strong>Guichê ${ticket.guiche}</strong></td>
+                            <td>${horaEmissao}</td>
+                            <td>${horaChamada}</td>
+                            <td>
+                                <span class="badge ${this.getStatusClass(ticket.status)}">
+                                    ${this.getStatusText(ticket.status)}
+                                </span>
+                            </td>
+                            <td>
+                                <button class="btn btn-sm btn-outline-primary" 
+                                        onclick="TicketSystem.rechamarTicket('${ticket.id}')"
+                                        ${ticket.status === 'chamando' ? 'disabled' : ''}>
+                                    <i class="bi bi-megaphone"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                });
+                
+                tbody.innerHTML = html;
+            },
+            
+            rechamarTicket: function(ticketId) {
+                const ticket = this.tickets.find(t => t.id === ticketId);
+                if (ticket) {
+                    this.chamarTicket(ticket);
+                    showAlert(`Rechamando ${ticketId}...`, 'info');
+                }
+            },
+            
+            atualizarEstatisticas: function() {
+                // Total tickets
+                const totalElement = document.getElementById('totalTickets');
+                if (totalElement) {
+                    totalElement.textContent = this.tickets.length;
+                }
+                
+                // Tickets em espera
+                const esperaElement = document.getElementById('ticketsEspera');
+                if (esperaElement) {
+                    const emEspera = this.tickets.filter(t => t.status === 'aguardando').length;
+                    esperaElement.textContent = emEspera;
+                }
+                
+                // Footer
+                const footerElement = document.getElementById('ticketCounterFooter');
+                if (footerElement) {
+                    footerElement.textContent = `Tickets: ${this.tickets.length}`;
+                }
+                
+                // Por categoria
+                ['T', 'F', 'C', 'P'].forEach(tipo => {
+                    const count = this.tickets.filter(t => t.tipo === tipo).length;
+                    const elementId = `stat${tipo === 'T' ? 'Tecnico' : 
+                                       tipo === 'F' ? 'Financeiro' : 
+                                       tipo === 'C' ? 'Comercial' : 'Prioridade'}`;
+                    const element = document.getElementById(elementId);
+                    if (element) {
+                        element.textContent = count;
+                    }
+                });
+            },
+            
+            atualizarContadorFila: function() {
+                const emEspera = this.tickets.filter(t => t.status === 'aguardando').length;
+                localStorage.setItem('filaEspera', emEspera.toString());
+            },
+            
+            getBadgeClass: function(tipo) {
+                const classes = {
+                    'T': 'bg-warning text-dark',
+                    'F': 'bg-success',
+                    'C': 'bg-primary',
+                    'P': 'bg-danger'
+                };
+                return classes[tipo] || 'bg-secondary';
+            },
+            
+            getStatusClass: function(status) {
+                const classes = {
+                    'aguardando': 'bg-warning text-dark',
+                    'chamando': 'bg-info status-chamando',
+                    'atendido': 'bg-success',
+                    'cancelado': 'bg-secondary'
+                };
+                return classes[status] || 'bg-light text-dark';
+            },
+            
+            getStatusText: function(status) {
+                const textos = {
+                    'aguardando': 'Aguardando',
+                    'chamando': 'Chamando',
+                    'atendido': 'Atendido',
+                    'cancelado': 'Cancelado'
+                };
+                return textos[status] || status;
+            },
+            
+            saveToStorage: function() {
+                localStorage.setItem('ticketSystem', JSON.stringify({
+                    contadores: this.contadores,
+                    tickets: this.tickets,
+                    currentTicket: this.currentTicket
+                }));
+            },
+            
+            loadFromStorage: function() {
+                const data = localStorage.getItem('ticketSystem');
+                if (data) {
+                    try {
+                        const parsed = JSON.parse(data);
+                        this.contadores = parsed.contadores || this.contadores;
+                        this.tickets = parsed.tickets || [];
+                        this.currentTicket = parsed.currentTicket || null;
+                        console.log(`📊 ${this.tickets.length} tickets carregados`);
+                    } catch (e) {
+                        console.error('Erro ao carregar:', e);
+                    }
+                }
+            }
+        };
+        
+        // ===== LÓGICA DA PÁGINA =====
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🎮 Painel de Controle inicializando...');
+            
+            // Inicializar sistema de tickets
+            if (typeof TicketSystem !== 'undefined') {
+                TicketSystem.init();
+            } else {
+                showAlert('Erro: Sistema de tickets não carregado', 'danger');
+                console.error('❌ TicketSystem não encontrado!');
+            }
+            
+            // ===== PRÉ-VISUALIZAÇÃO DO TICKET =====
+            const tipoTicket = document.getElementById('tipoTicket');
+            const guicheAtendimento = document.getElementById('guicheAtendimento');
+            const previewDiv = document.getElementById('ticketPreview');
+            
+            function atualizarPreview() {
+                const tipo = tipoTicket.value;
+                const guiche = guicheAtendimento.value;
+                
+                if (tipo) {
+                    const tipos = {
+                        'T': { nome: 'TÉCNICO', numero: '106', badge: 'badge-tecnico' },
+                        'F': { nome: 'FINANCEIRO', numero: '042', badge: 'badge-financeiro' },
+                        'C': { nome: 'COMERCIAL', numero: '018', badge: 'badge-comercial' },
+                        'P': { nome: 'PRIORIDADE', numero: '001', badge: 'badge-prioridade' }
+                    };
+                    
+                    const info = tipos[tipo] || { nome: 'DESCONHECIDO', numero: '000', badge: 'badge-secondary' };
+                    
+                    document.getElementById('previewNumber').textContent = `${tipo}-${info.numero}`;
+                    document.getElementById('previewNumber').className = `preview-ticket-number ${info.badge}`;
+                    document.getElementById('previewCategory').textContent = info.nome;
+                    document.getElementById('previewGuiche').textContent = guiche;
+                    
+                    previewDiv.classList.add('show');
+                } else {
+                    previewDiv.classList.remove('show');
+                }
+            }
+            
+            if (tipoTicket) tipoTicket.addEventListener('change', atualizarPreview);
+            if (guicheAtendimento) guicheAtendimento.addEventListener('change', atualizarPreview);
+            
+            // Atualizar preview inicial
+            setTimeout(atualizarPreview, 100);
+            
+            // ===== CONTROLE DE VOLUME =====
+            const volumeSlider = document.getElementById('volumeSom');
+            const volumeValue = document.getElementById('volumeValue');
+            
+            if (volumeSlider && volumeValue) {
+                volumeSlider.addEventListener('input', function() {
+                    const volume = this.value;
+                    volumeValue.textContent = `${volume}%`;
+                    localStorage.setItem('systemVolume', volume);
+                });
+                
+                const savedVolume = localStorage.getItem('systemVolume');
+                if (savedVolume) {
+                    volumeSlider.value = savedVolume;
+                    volumeValue.textContent = `${savedVolume}%`;
+                }
+            }
+            
+            // ===== ATUALIZAR RELÓGIO =====
+            function atualizarRelogio() {
+                const now = new Date();
+                const hora = now.toLocaleTimeString('pt-BR', {hour12: false});
+                const statusElement = document.getElementById('statusConexao');
+                if (statusElement) {
+                    statusElement.innerHTML = `<i class="bi bi-wifi"></i> Online - ${hora}`;
+                }
+            }
+            
+            atualizarRelogio();
+            setInterval(atualizarRelogio, 1000);
+            
+            console.log('✅ Painel de Controle inicializado com sucesso!');
+        });
+        
+        console.log('✅ SISTEMA COMPLETAMENTE CARREGADO!');
+    </script>
+</body>
+</html>

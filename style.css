@@ -1,0 +1,1670 @@
+/* 
+ * PAINEL DE ATENDIMENTO - STYLE.CSS
+ * Estilos minimalistas e funcionais para o sistema de tickets
+ * Versão 2.0 - Compatível com todos os arquivos HTML
+ */
+
+/* ============================================
+   VARIÁVEIS CSS GLOBAIS (PALETA DE CORES)
+============================================ */
+:root {
+    /* Cores Primárias */
+    --primary-blue: #0008EB;        /* Azul elétrico - destaque principal */
+    --primary-dark: #1a1a2e;        /* Azul escuro - fundos */
+    --primary-light: #f8f9fa;       /* Branco suave */
+    
+    /* Cores de Categoria */
+    --color-technical: #FFA500;     /* Laranja - Técnico */
+    --color-financial: #28A745;     /* Verde - Financeiro */
+    --color-commercial: #007BFF;    /* Azul - Comercial */
+    --color-priority: #DC3545;      /* Vermelho - Prioridade */
+    
+    /* Cores de Status */
+    --status-waiting: #FFC107;      /* Amarelo - Aguardando */
+    --status-calling: #17A2B8;      /* Azul claro - Chamando */
+    --status-attended: #20C997;     /* Verde claro - Atendido */
+    --status-cancelled: #6C757D;    /* Cinza - Cancelado */
+    
+    /* Cores de Interface */
+    --bg-light: #FFFFFF;
+    --bg-dark: #212529;
+    --border-color: #E9ECEF;
+    --shadow-color: rgba(0, 0, 0, 0.1);
+    --hover-color: rgba(0, 8, 235, 0.05);
+    
+    /* Espaçamentos */
+    --space-xs: 0.25rem;
+    --space-sm: 0.5rem;
+    --space-md: 1rem;
+    --space-lg: 1.5rem;
+    --space-xl: 2rem;
+    
+    /* Bordas */
+    --border-radius-sm: 4px;
+    --border-radius-md: 8px;
+    --border-radius-lg: 12px;
+    --border-radius-xl: 20px;
+    
+    /* Transições */
+    --transition-fast: 150ms ease;
+    --transition-normal: 300ms ease;
+    --transition-slow: 500ms ease;
+}
+
+/* ============================================
+   RESET E ESTILOS BASE
+============================================ */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    font-size: 16px;
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'Roboto', 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+    background-color: var(--bg-light);
+    color: var(--bg-dark);
+    line-height: 1.6;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+/* ============================================
+   TIPOGRAFIA
+============================================ */
+h1, h2, h3, h4, h5, h6 {
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: var(--space-md);
+}
+
+h1 {
+    font-size: 2.5rem;
+}
+
+h2 {
+    font-size: 2rem;
+}
+
+h3 {
+    font-size: 1.75rem;
+}
+
+h4 {
+    font-size: 1.5rem;
+}
+
+h5 {
+    font-size: 1.25rem;
+}
+
+h6 {
+    font-size: 1rem;
+}
+
+p {
+    margin-bottom: var(--space-md);
+}
+
+.lead {
+    font-size: 1.25rem;
+    font-weight: 300;
+}
+
+.text-small {
+    font-size: 0.875rem;
+}
+
+.text-muted {
+    color: #6c757d !important;
+}
+
+/* ============================================
+   HEADER PRINCIPAL
+============================================ */
+.header-painel {
+    background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-blue) 100%);
+    color: white;
+    padding: var(--space-xl) 0;
+    margin-bottom: var(--space-xl);
+    position: relative;
+    overflow: hidden;
+}
+
+.header-painel::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="%23ffffff" fill-opacity="0.1" d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,112C672,96,768,96,864,112C960,128,1056,160,1152,160C1248,160,1344,128,1392,112L1440,96L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>');
+    background-size: cover;
+    opacity: 0.1;
+}
+
+.header-painel h1 {
+    position: relative;
+    z-index: 1;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    animation: fadeInDown 0.8s ease;
+}
+
+.header-painel .lead {
+    position: relative;
+    z-index: 1;
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 300;
+}
+
+/* ============================================
+   CARDS E CONTAINERS
+============================================ */
+.card {
+    border: none;
+    border-radius: var(--border-radius-lg);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+    background: white;
+    transition: all var(--transition-normal);
+    overflow: hidden;
+    margin-bottom: var(--space-lg);
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15);
+}
+
+.card-header {
+    background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-blue) 100%);
+    color: white;
+    border: none;
+    padding: var(--space-lg) var(--space-xl);
+    font-weight: 600;
+    font-size: 1.1rem;
+    border-radius: var(--border-radius-lg) var(--border-radius-lg) 0 0 !important;
+}
+
+.card-header i {
+    margin-right: var(--space-sm);
+}
+
+.card-body {
+    padding: var(--space-xl);
+}
+
+.card-footer {
+    background-color: var(--bg-light);
+    border-top: 1px solid var(--border-color);
+    padding: var(--space-lg) var(--space-xl);
+    border-radius: 0 0 var(--border-radius-lg) var(--border-radius-lg);
+}
+
+/* ============================================
+   PAINEL DE CHAMADA PRINCIPAL
+============================================ */
+#painel-chamada-atual {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: var(--space-xl);
+    border-radius: var(--border-radius-lg);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+    animation: gradientShift 10s ease infinite;
+    background-size: 200% 200%;
+}
+
+@keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+#chamada-numero {
+    font-size: 10rem;
+    font-weight: 900;
+    line-height: 1;
+    color: #FFD700;
+    text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.4);
+    margin: var(--space-md) 0;
+    animation: pulseNumber 2s ease-in-out infinite;
+}
+
+@keyframes pulseNumber {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+#chamada-guiche {
+    font-size: 2.5rem;
+    font-weight: 600;
+    color: white;
+    background: rgba(0, 0, 0, 0.2);
+    padding: var(--space-sm) var(--space-xl);
+    border-radius: var(--border-radius-xl);
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    margin-top: var(--space-lg);
+}
+
+/* ============================================
+   FORMULÁRIOS E INPUTS
+============================================ */
+.form-control, .form-select {
+    border: 2px solid var(--border-color);
+    border-radius: var(--border-radius-md);
+    padding: var(--space-md) var(--space-lg);
+    font-size: 1rem;
+    transition: all var(--transition-fast);
+    background-color: var(--bg-light);
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: var(--primary-blue);
+    box-shadow: 0 0 0 0.25rem rgba(0, 8, 235, 0.15);
+    outline: none;
+    transform: translateY(-1px);
+}
+
+.form-label {
+    font-weight: 600;
+    margin-bottom: var(--space-sm);
+    color: var(--primary-dark);
+    display: flex;
+    align-items: center;
+}
+
+.form-label i {
+    margin-right: var(--space-sm);
+    color: var(--primary-blue);
+}
+
+.form-check-input:checked {
+    background-color: var(--primary-blue);
+    border-color: var(--primary-blue);
+}
+
+/* ============================================
+   BOTÕES
+============================================ */
+.btn {
+    padding: var(--space-md) var(--space-xl);
+    border-radius: var(--border-radius-md);
+    font-weight: 600;
+    transition: all var(--transition-normal);
+    border: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-sm);
+    cursor: pointer;
+}
+
+.btn i {
+    font-size: 1.1em;
+}
+
+.btn-lg {
+    padding: var(--space-lg) var(--space-xl);
+    font-size: 1.1rem;
+}
+
+.btn-sm {
+    padding: var(--space-sm) var(--space-md);
+    font-size: 0.875rem;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--primary-blue) 0%, #4a6cf7 100%);
+    color: white;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 8, 235, 0.25);
+}
+
+.btn-success {
+    background: linear-gradient(135deg, #28A745 0%, #20C997 100%);
+    color: white;
+}
+
+.btn-warning {
+    background: linear-gradient(135deg, #FFC107 0%, #FFA500 100%);
+    color: var(--bg-dark);
+}
+
+.btn-danger {
+    background: linear-gradient(135deg, #DC3545 0%, #C82333 100%);
+    color: white;
+}
+
+.btn-outline-primary {
+    border: 2px solid var(--primary-blue);
+    color: var(--primary-blue);
+    background: transparent;
+}
+
+.btn-outline-primary:hover {
+    background: var(--primary-blue);
+    color: white;
+}
+
+.btn-custom-primary {
+    background: linear-gradient(135deg, var(--primary-blue) 0%, #4a6cf7 100%);
+    color: white;
+    border: none;
+}
+
+.btn-custom-primary:hover {
+    background: linear-gradient(135deg, #4a6cf7 0%, var(--primary-blue) 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 8, 235, 0.3);
+}
+
+/* ============================================
+   LISTAS E HISTÓRICOS
+============================================ */
+.list-group {
+    border-radius: var(--border-radius-md);
+    overflow: hidden;
+}
+
+.list-group-item {
+    padding: var(--space-md) var(--space-lg);
+    border: none;
+    border-bottom: 1px solid var(--border-color);
+    transition: all var(--transition-fast);
+    background-color: var(--bg-light);
+}
+
+.list-group-item:last-child {
+    border-bottom: none;
+}
+
+.list-group-item:hover {
+    background-color: var(--hover-color);
+    transform: translateX(4px);
+}
+
+.guiche-label {
+    background: var(--primary-blue);
+    color: white;
+    padding: var(--space-xs) var(--space-md);
+    border-radius: var(--border-radius-sm);
+    font-weight: 600;
+    font-size: 0.875rem;
+}
+
+/* ============================================
+   CARROSSEL (OWL CAROUSEL)
+============================================ */
+.owl-carousel {
+    position: relative;
+}
+
+.owl-carousel .item {
+    border-radius: var(--border-radius-md);
+    overflow: hidden;
+    background: var(--bg-light);
+}
+
+.owl-carousel .item img,
+.owl-carousel .item video {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: var(--border-radius-md);
+}
+
+.owl-carousel .item video {
+    background: #000;
+}
+
+.owl-nav {
+    position: absolute;
+    top: 50%;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    transform: translateY(-50%);
+    pointer-events: none;
+}
+
+.owl-nav button {
+    pointer-events: all;
+    background: rgba(0, 0, 0, 0.5) !important;
+    color: white !important;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    margin: 0 var(--space-lg);
+    transition: all var(--transition-normal);
+}
+
+.owl-nav button:hover {
+    background: rgba(0, 8, 235, 0.8) !important;
+    transform: scale(1.1);
+}
+
+.owl-dots {
+    position: absolute;
+    bottom: var(--space-lg);
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    gap: var(--space-sm);
+}
+
+.owl-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.5) !important;
+    transition: all var(--transition-normal);
+}
+
+.owl-dot.active {
+    background: var(--primary-blue) !important;
+    transform: scale(1.2);
+}
+
+/* ============================================
+   BADGES E TAGS
+============================================ */
+.badge {
+    padding: var(--space-xs) var(--space-md);
+    border-radius: var(--border-radius-sm);
+    font-weight: 600;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.badge-technical {
+    background-color: var(--color-technical);
+    color: var(--bg-dark);
+}
+
+.badge-financial {
+    background-color: var(--color-financial);
+    color: white;
+}
+
+.badge-commercial {
+    background-color: var(--color-commercial);
+    color: white;
+}
+
+.badge-priority {
+    background-color: var(--color-priority);
+    color: white;
+}
+
+.badge-waiting {
+    background-color: var(--status-waiting);
+    color: var(--bg-dark);
+}
+
+.badge-calling {
+    background-color: var(--status-calling);
+    color: white;
+}
+
+.badge-attended {
+    background-color: var(--status-attended);
+    color: white;
+}
+
+.badge-cancelled {
+    background-color: var(--status-cancelled);
+    color: white;
+}
+
+/* ============================================
+   ANIMAÇÕES
+============================================ */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.animate-fade-in {
+    animation: fadeIn 0.5s ease;
+}
+
+.animate-fade-in-up {
+    animation: fadeInUp 0.6s ease;
+}
+
+.animate-fade-in-down {
+    animation: fadeInDown 0.6s ease;
+}
+
+.animate-slide-in-left {
+    animation: slideInLeft 0.5s ease;
+}
+
+.animate-slide-in-right {
+    animation: slideInRight 0.5s ease;
+}
+
+/* ============================================
+   UTILITÁRIOS
+============================================ */
+.text-primary-accent {
+    color: var(--primary-blue) !important;
+}
+
+.text-secondary-accent {
+    color: var(--primary-dark) !important;
+}
+
+.bg-gradient-primary {
+    background: linear-gradient(135deg, var(--primary-blue) 0%, #4a6cf7 100%);
+}
+
+.bg-gradient-dark {
+    background: linear-gradient(135deg, var(--primary-dark) 0%, #2d3748 100%);
+}
+
+.shadow-sm {
+    box-shadow: 0 2px 8px var(--shadow-color) !important;
+}
+
+.shadow-md {
+    box-shadow: 0 4px 16px var(--shadow-color) !important;
+}
+
+.shadow-lg {
+    box-shadow: 0 8px 25px var(--shadow-color) !important;
+}
+
+.rounded-xl {
+    border-radius: var(--border-radius-xl) !important;
+}
+
+.border-light {
+    border: 1px solid var(--border-color) !important;
+}
+
+/* ============================================
+   RESPONSIVIDADE
+============================================ */
+@media (max-width: 768px) {
+    html {
+        font-size: 14px;
+    }
+    
+    .header-painel {
+        padding: var(--space-lg) 0;
+        margin-bottom: var(--space-lg);
+    }
+    
+    #chamada-numero {
+        font-size: 6rem;
+    }
+    
+    #chamada-guiche {
+        font-size: 1.5rem;
+    }
+    
+    .card-body {
+        padding: var(--space-lg);
+    }
+    
+    .owl-nav button {
+        width: 40px;
+        height: 40px;
+        margin: 0 var(--space-md);
+    }
+}
+
+@media (max-width: 576px) {
+    #chamada-numero {
+        font-size: 4rem;
+    }
+    
+    .btn {
+        width: 100%;
+        margin-bottom: var(--space-sm);
+    }
+    
+    .btn-group {
+        width: 100%;
+    }
+    
+    .btn-group .btn {
+        width: auto;
+        flex: 1;
+    }
+}
+
+@media (min-width: 1200px) {
+    .container-fluid {
+        padding-left: 3rem;
+        padding-right: 3rem;
+    }
+}
+
+/* ============================================
+   ESTILOS ESPECÍFICOS PARA PAINEL PÚBLICO
+============================================ */
+.public-display {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+    color: white;
+}
+
+.public-display .card {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.public-display .card-header {
+    background: rgba(0, 0, 0, 0.2);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.public-display .list-group-item {
+    background: transparent;
+    color: white;
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+/* ============================================
+   ESTILOS PARA MODAL (SE NECESSÁRIO)
+============================================ */
+.modal-content {
+    border: none;
+    border-radius: var(--border-radius-lg);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.modal-header {
+    background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-blue) 100%);
+    color: white;
+    border-radius: var(--border-radius-lg) var(--border-radius-lg) 0 0;
+    border: none;
+}
+
+.modal-footer {
+    border-top: 1px solid var(--border-color);
+}
+
+/* ============================================
+   ESTILOS PARA TABELAS
+============================================ */
+.table {
+    width: 100%;
+    margin-bottom: var(--space-lg);
+    background: white;
+    border-radius: var(--border-radius-md);
+    overflow: hidden;
+    box-shadow: 0 2px 8px var(--shadow-color);
+}
+
+.table thead th {
+    background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-blue) 100%);
+    color: white;
+    border: none;
+    padding: var(--space-md) var(--space-lg);
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.875rem;
+    letter-spacing: 0.5px;
+}
+
+.table tbody td {
+    padding: var(--space-md) var(--space-lg);
+    border-bottom: 1px solid var(--border-color);
+    vertical-align: middle;
+}
+
+.table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.table tbody tr:hover {
+    background-color: var(--hover-color);
+}
+
+/* ============================================
+   ESTILOS PARA ALERTAS
+============================================ */
+.alert {
+    border: none;
+    border-radius: var(--border-radius-md);
+    padding: var(--space-md) var(--space-lg);
+    margin-bottom: var(--space-md);
+    font-weight: 500;
+}
+
+.alert-success {
+    background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+    color: #155724;
+    border-left: 4px solid var(--color-financial);
+}
+
+.alert-warning {
+    background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+    color: #856404;
+    border-left: 4px solid var(--color-technical);
+}
+
+.alert-info {
+    background: linear-gradient(135deg, #d1ecf1 0%, #bee5eb 100%);
+    color: #0c5460;
+    border-left: 4px solid var(--status-calling);
+}
+
+.alert-danger {
+    background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+    color: #721c24;
+    border-left: 4px solid var(--color-priority);
+}
+
+/* ============================================
+   FOOTER
+============================================ */
+footer {
+    background: var(--primary-dark);
+    color: white;
+    padding: var(--space-lg) 0;
+    margin-top: auto;
+    border-top: 3px solid var(--primary-blue);
+}
+
+footer p {
+    margin-bottom: 0;
+    opacity: 0.8;
+}
+
+/* ============================================
+   ESTILOS PARA SCROLLBAR
+============================================ */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg-light);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--primary-blue);
+    border-radius: var(--border-radius-sm);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #4a6cf7;
+}
+
+/* ============================================
+   LOADING SPINNER (PARA FUTURAS IMPLEMENTAÇÕES)
+============================================ */
+.spinner {
+    display: inline-block;
+    width: 2rem;
+    height: 2rem;
+    border: 3px solid rgba(0, 8, 235, 0.3);
+    border-radius: 50%;
+    border-top-color: var(--primary-blue);
+    animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* ============================================
+   ESTILOS PARA TOOLTIPS
+============================================ */
+[data-bs-toggle="tooltip"] {
+    position: relative;
+    cursor: help;
+}
+
+[data-bs-toggle="tooltip"]::after {
+    content: attr(title);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--primary-dark);
+    color: white;
+    padding: var(--space-xs) var(--space-sm);
+    border-radius: var(--border-radius-sm);
+    font-size: 0.75rem;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: all var(--transition-fast);
+    z-index: 1000;
+}
+
+[data-bs-toggle="tooltip"]:hover::after {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(-4px);
+}
+
+/* ============================================
+   ESTILOS PARA PRINT (IMPRESSÃO)
+============================================ */
+@media print {
+    .no-print {
+        display: none !important;
+    }
+    
+    .card {
+        box-shadow: none !important;
+        border: 1px solid #ddd !important;
+    }
+    
+    .btn {
+        display: none !important;
+    }
+}
+
+/* ============================================
+   ESTILOS PARA DARK MODE (OPCIONAL)
+============================================ */
+@media (prefers-color-scheme: dark) {
+    body.dark-mode {
+        background-color: #121212;
+        color: #f8f9fa;
+    }
+    
+    body.dark-mode .card {
+        background-color: #1e1e1e;
+        color: #f8f9fa;
+    }
+    
+    body.dark-mode .form-control,
+    body.dark-mode .form-select {
+        background-color: #2d2d2d;
+        border-color: #444;
+        color: #f8f9fa;
+    }
+}
+
+
+
+/* Efeitos para tickets */
+.ticket-animation {
+    animation: ticketPop 0.5s ease-out;
+}
+
+@keyframes ticketPop {
+    0% {
+        transform: scale(0.8);
+        opacity: 0;
+    }
+    70% {
+        transform: scale(1.05);
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* Status colors */
+.status-aguardando {
+    color: #ffc107;
+    background-color: rgba(255, 193, 7, 0.1);
+}
+
+.status-chamando {
+    color: #17a2b8;
+    background-color: rgba(23, 162, 184, 0.1);
+    animation: blinking 1s infinite;
+}
+
+@keyframes blinking {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+.status-atendido {
+    color: #28a745;
+    background-color: rgba(40, 167, 69, 0.1);
+}
+
+/* Badge categories */
+.badge-category-T {
+    background: linear-gradient(45deg, #ffa500, #ff8c00);
+}
+
+.badge-category-F {
+    background: linear-gradient(45deg, #28a745, #20c997);
+}
+
+.badge-category-C {
+    background: linear-gradient(45deg, #007bff, #6610f2);
+}
+
+.badge-category-P {
+    background: linear-gradient(45deg, #dc3545, #c82333);
+}
+/* ===== ESTILOS PARA OWL CAROUSEL ===== */
+.owl-carousel {
+    position: relative;
+}
+
+.owl-carousel .item {
+    border-radius: 15px;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    padding: 20px;
+    height: 350px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.owl-carousel .item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    border-color: rgba(255, 255, 255, 0.4);
+}
+
+.owl-carousel .item i {
+    font-size: 4rem;
+    margin-bottom: 20px;
+    color: white;
+    opacity: 0.9;
+}
+
+.owl-carousel .item h4 {
+    color: white;
+    font-weight: 700;
+    margin-bottom: 10px;
+    font-size: 1.5rem;
+}
+
+.owl-carousel .item p {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 1.1rem;
+}
+
+/* Cores diferentes para cada slide */
+.owl-carousel .item:nth-child(1) {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.owl-carousel .item:nth-child(2) {
+    background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+}
+
+.owl-carousel .item:nth-child(3) {
+    background: linear-gradient(135deg, #f46b45 0%, #eea849 100%);
+}
+
+.owl-carousel .item:nth-child(4) {
+    background: linear-gradient(135deg, #834d9b 0%, #d04ed6 100%);
+}
+
+.owl-carousel .item:nth-child(5) {
+    background: linear-gradient(135deg, #0052d4 0%, #4364f7 100%);
+}
+
+/* Controles do carrossel */
+.owl-nav {
+    position: absolute;
+    top: 50%;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    transform: translateY(-50%);
+    pointer-events: none;
+}
+
+.owl-nav button {
+    pointer-events: all;
+    background: rgba(255, 255, 255, 0.3) !important;
+    color: white !important;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    margin: 0 15px;
+    transition: all 0.3s;
+    border: 2px solid white;
+}
+
+.owl-nav button:hover {
+    background: rgba(255, 255, 255, 0.6) !important;
+    transform: scale(1.1);
+}
+
+.owl-dots {
+    position: absolute;
+    bottom: 20px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.owl-dot {
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3) !important;
+    transition: all 0.3s;
+}
+
+.owl-dot.active {
+    background: white !important;
+    transform: scale(1.2);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+/* Progress bar para carrossel automático */
+.progress-timer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 5px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 0 0 15px 15px;
+    overflow: hidden;
+}
+
+.progress-timer-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #00b4db, #0083b0);
+    width: 0%;
+    transition: width 0.1s linear;
+    border-radius: 0 0 15px 15px;
+}
+
+/* Indicadores */
+.carousel-indicator {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    z-index: 10;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .owl-carousel .item {
+        height: 250px;
+        padding: 15px;
+    }
+    
+    .owl-carousel .item i {
+        font-size: 3rem;
+    }
+    
+    .owl-carousel .item h4 {
+        font-size: 1.2rem;
+    }
+    
+    .owl-carousel .item p {
+        font-size: 1rem;
+    }
+    
+    .owl-nav button {
+        width: 40px;
+        height: 40px;
+        margin: 0 10px;
+    }
+}
+/* ============================================
+   ESTILOS ESPECÍFICOS PARA PAINEL DE CONTROLE (atendimento.html)
+============================================ */
+
+/* Preview de Ticket */
+.ticket-preview {
+    background: linear-gradient(135deg, var(--primary-blue) 0%, #4a6cf7 100%);
+    color: white;
+    padding: var(--space-lg);
+    border-radius: var(--border-radius-lg);
+    margin-top: var(--space-md);
+    display: none;
+    animation: fadeIn 0.5s ease;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.ticket-preview.show {
+    display: block;
+}
+
+.preview-ticket-number {
+    font-size: 2.5rem;
+    font-weight: 900;
+    color: #FFD700;
+    margin: var(--space-sm) 0;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Badges específicos para preview */
+.badge-tecnico {
+    background: linear-gradient(45deg, var(--color-technical), #FF8C00);
+    color: var(--bg-dark);
+}
+
+.badge-financeiro {
+    background: linear-gradient(45deg, var(--color-financial), #20C997);
+    color: white;
+}
+
+.badge-comercial {
+    background: linear-gradient(45deg, var(--color-commercial), #6610F2);
+    color: white;
+}
+
+.badge-prioridade {
+    background: linear-gradient(45deg, var(--color-priority), #C82333);
+    color: white;
+}
+
+/* Sistema de Alertas */
+.system-alert {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1050;
+    min-width: 300px;
+    max-width: 500px;
+    animation: slideInRight 0.5s ease;
+    display: none;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    border-radius: var(--border-radius-lg);
+    border: none;
+}
+
+.system-alert.show {
+    display: block;
+}
+
+/* Controle de Volume */
+.form-range::-webkit-slider-thumb {
+    background: var(--primary-blue);
+    border: 2px solid white;
+    box-shadow: 0 2px 8px rgba(0, 8, 235, 0.3);
+}
+
+.form-range::-moz-range-thumb {
+    background: var(--primary-blue);
+    border: 2px solid white;
+}
+
+.form-range::-ms-thumb {
+    background: var(--primary-blue);
+    border: 2px solid white;
+}
+
+/* Histórico na tabela */
+.history-row {
+    transition: all var(--transition-fast);
+}
+
+.history-row:hover {
+    background-color: rgba(0, 8, 235, 0.05);
+    transform: translateX(5px);
+}
+
+/* ============================================
+   ESTILOS PARA PAINEL PÚBLICO MANUAL (atendimento2.html)
+============================================ */
+body.public-display.manual-mode {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.media-placeholder {
+    background: linear-gradient(45deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+    height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    border-radius: 15px;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+}
+
+.carousel-controls {
+    position: absolute;
+    bottom: 20px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    z-index: 10;
+}
+
+.carousel-controls button {
+    background: rgba(255, 255, 255, 0.2);
+    border: 2px solid white;
+    color: white;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin: 0 10px;
+    font-size: 1.5rem;
+    transition: all 0.3s;
+}
+
+.carousel-controls button:hover {
+    background: rgba(255, 255, 255, 0.4);
+    transform: scale(1.1);
+}
+
+.guiche-display {
+    font-size: 2.5rem;
+    font-weight: 600;
+    background: rgba(0, 0, 0, 0.3);
+    padding: 10px 30px;
+    border-radius: 15px;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.waiting-time {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #FFD700;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.queue-count {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #20C997;
+}
+
+.clock-display {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #17A2B8;
+}
+
+.manual-badge {
+    animation: pulse 1.5s infinite;
+}
+
+/* ============================================
+   ESTILOS PARA PAINEL PÚBLICO AUTOMÁTICO (atendimento3.html)
+============================================ */
+body.public-display.auto-mode {
+    background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+}
+
+.auto-carousel-indicator {
+    position: absolute;
+    bottom: 15px;
+    right: 15px;
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    z-index: 10;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.auto-timer {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 10px;
+    padding: 10px 15px;
+    color: white;
+    font-weight: bold;
+    z-index: 10;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.media-placeholder-auto {
+    background: rgba(255, 255, 255, 0.05);
+    height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 15px;
+    position: relative;
+    overflow: hidden;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(5px);
+}
+
+.media-placeholder-auto::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+        45deg,
+        transparent 30%,
+        rgba(255, 255, 255, 0.05) 50%,
+        transparent 70%
+    );
+    animation: shimmer 3s infinite linear;
+}
+
+@keyframes shimmer {
+    0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+    100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+}
+
+.speed-control {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    padding: 10px;
+    margin: 5px 0;
+    transition: all 0.3s;
+}
+
+.speed-control:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.auto-flash {
+    animation: flash 0.5s ease;
+}
+
+@keyframes flash {
+    0% { background-color: inherit; }
+    50% { background-color: rgba(255, 255, 255, 0.2); }
+    100% { background-color: inherit; }
+}
+
+/* ============================================
+   CLASSES DE GRADIENTE PARA BADGES
+============================================ */
+.gradient-warning {
+    background: linear-gradient(45deg, #ffd700, #ffa500) !important;
+    color: #333 !important;
+}
+
+.gradient-info {
+    background: linear-gradient(45deg, #00b4db, #0083b0) !important;
+    color: white !important;
+}
+
+.gradient-success {
+    background: linear-gradient(45deg, #28a745, #20c997) !important;
+    color: white !important;
+}
+
+.gradient-primary {
+    background: linear-gradient(45deg, var(--primary-blue), #6610f2) !important;
+    color: white !important;
+}
+
+.gradient-danger {
+    background: linear-gradient(45deg, #dc3545, #c82333) !important;
+    color: white !important;
+}
+
+/* ============================================
+   ANIMAÇÕES ESPECÍFICAS
+============================================ */
+@keyframes rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+@keyframes rotateFast {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+@keyframes ticket-animation {
+    0% { 
+        transform: scale(0.8) rotate(-5deg); 
+        opacity: 0; 
+    }
+    70% { 
+        transform: scale(1.05) rotate(2deg); 
+    }
+    100% { 
+        transform: scale(1) rotate(0deg); 
+        opacity: 1; 
+    }
+}
+
+/* Classes utilitárias para animações */
+.rotate {
+    animation: rotate 0.5s linear;
+}
+
+.rotate-fast {
+    animation: rotateFast 0.5s linear;
+}
+
+.ticket-animation {
+    animation: ticket-pop 0.5s ease-out;
+}
+
+.ticket-animation-auto {
+    animation: ticket-animation 0.5s ease-out;
+}
+
+@keyframes ticket-pop {
+    0% { transform: scale(0.8); opacity: 0; }
+    70% { transform: scale(1.05); }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+/* ============================================
+   CORREÇÕES PARA RESPONSIVIDADE ESPECÍFICA
+============================================ */
+@media (max-width: 992px) {
+    .ticket-number-auto,
+    #chamada-numero {
+        font-size: 6rem !important;
+    }
+    
+    .guiche-display-auto,
+    .guiche-display {
+        font-size: 1.8rem !important;
+        padding: 8px 20px !important;
+    }
+    
+    .waiting-time-auto,
+    .waiting-time,
+    .queue-count-auto,
+    .queue-count {
+        font-size: 2rem !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .ticket-number-auto,
+    #chamada-numero {
+        font-size: 4rem !important;
+    }
+    
+    .media-placeholder,
+    .media-placeholder-auto {
+        height: 200px !important;
+    }
+    
+    .carousel-controls button {
+        width: 40px;
+        height: 40px;
+        font-size: 1.2rem;
+    }
+    
+    .auto-timer {
+        padding: 8px 12px;
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .preview-ticket-number {
+        font-size: 2rem !important;
+    }
+    
+    .ticket-number-auto,
+    #chamada-numero {
+        font-size: 3rem !important;
+    }
+    
+    .guiche-display-auto,
+    .guiche-display {
+        font-size: 1.5rem !important;
+        padding: 6px 15px !important;
+    }
+}
+
+/* ============================================
+   CLASSES UTILITÁRIAS ADICIONAIS
+============================================ */
+.cursor-pointer {
+    cursor: pointer !important;
+}
+
+.user-select-none {
+    user-select: none !important;
+}
+
+.border-dashed {
+    border-style: dashed !important;
+}
+
+.text-ellipsis {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.flex-grow-1 {
+    flex-grow: 1 !important;
+}
+
+.opacity-75 {
+    opacity: 0.75 !important;
+}
+
+.opacity-50 {
+    opacity: 0.5 !important;
+}
+
+/* ============================================
+   ESTILOS PARA ESTADOS DE VALIDAÇÃO
+============================================ */
+.is-valid {
+    border-color: var(--color-financial) !important;
+}
+
+.is-invalid {
+    border-color: var(--color-priority) !important;
+}
+
+/* ============================================
+   ESTILOS PARA CARREGAMENTO
+============================================ */
+.loading-spinner {
+    display: inline-block;
+    width: 50px;
+    height: 50px;
+    border: 3px solid rgba(0, 8, 235, 0.3);
+    border-radius: 50%;
+    border-top-color: var(--primary-blue);
+    animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* ============================================
+   ESTILOS PARA MODAL DE CONFIRMAÇÃO
+============================================ */
+.confirmation-modal .modal-content {
+    border: 3px solid var(--primary-blue);
+}
+
+.confirmation-modal .modal-header {
+    background: linear-gradient(135deg, var(--color-priority), #C82333);
+}
+
+.confirmation-icon {
+    font-size: 4rem;
+    color: var(--color-priority);
+    animation: pulse 1.5s infinite;
+}

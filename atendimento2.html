@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Público - Display Manual | Sistema de Atendimento</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+     <link href="style.css">
+     <link href="script.js">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        /* Estilos específicos para atendimento2.html */
+        body.public-display {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Roboto', sans-serif;
+            color: white;
+            overflow-x: hidden;
+        }
+        
+        .carousel-controls {
+            position: absolute;
+            bottom: 20px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            z-index: 10;
+        }
+        
+        .carousel-controls button {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid white;
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            margin: 0 10px;
+            font-size: 1.5rem;
+            transition: all 0.3s;
+        }
+        
+        .carousel-controls button:hover {
+            background: rgba(255, 255, 255, 0.4);
+            transform: scale(1.1);
+        }
+        
+        .media-placeholder {
+            background: linear-gradient(45deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+            height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            border-radius: 15px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+        }
+        
+        .ticket-display {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+            border: 3px solid rgba(255, 215, 0, 0.3);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            animation: glow 2s infinite alternate;
+        }
+        
+        @keyframes glow {
+            from { box-shadow: 0 0 20px rgba(255, 215, 0, 0.3); }
+            to { box-shadow: 0 0 40px rgba(255, 215, 0, 0.6); }
+        }
+        
+        .info-box {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            padding: 25px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .ticket-number {
+            font-size: 8rem;
+            font-weight: 900;
+            color: #FFD700;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.4);
+            margin: 20px 0;
+            animation: pulseNumber 2s ease-in-out infinite;
+        }
+        
+        @keyframes pulseNumber {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .guiche-display {
+            font-size: 2.5rem;
+            font-weight: 600;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 10px 30px;
+            border-radius: 15px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .history-item {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            margin-bottom: 10px;
+            padding: 15px;
+            transition: all 0.3s;
+        }
+        
+        .history-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(5px);
+        }
+        
+        .category-badge {
+            padding: 8px 15px;
+            border-radius: 10px;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+        
+        .badge-technical {
+            background: linear-gradient(45deg, #FFA500, #FF8C00);
+            color: #333;
+        }
+        
+        .badge-financial {
+            background: linear-gradient(45deg, #28A745, #20C997);
+            color: white;
+        }
+        
+        .badge-commercial {
+            background: linear-gradient(45deg, #007BFF, #6610F2);
+            color: white;
+        }
+        
+        .badge-priority {
+            background: linear-gradient(45deg, #DC3545, #C82333);
+            color: white;
+        }
+        
+        .waiting-time {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #FFD700;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .clock-display {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #17A2B8;
+        }
+        
+        .queue-count {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #20C997;
+        }
+        
+        .manual-badge {
+            animation: pulseBadge 1.5s infinite;
+        }
+        
+        @keyframes pulseBadge {
+            0% { opacity: 1; }
+            50% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
+    </style>
+</head>
+<body class="public-display">
+    <div class="container-fluid py-4">
+        <div class="row g-4">
+            
+            <!-- CABEÇALHO -->
+            <div class="col-12 text-center mb-4">
+                <div class="info-box">
+                    <h1 class="display-4 fw-bold mb-2">
+                        <i class="bi bi-display"></i> PAINEL DE ATENDIMENTO
+                    </h1>
+                    <p class="lead mb-0">Acompanhe sua senha em tempo real</p>
+                    <div class="mt-3">
+                        <span class="badge bg-warning manual-badge me-2">
+                            <i class="bi bi-hand-index"></i> MODO MANUAL
+                        </span>
+                        <span class="badge bg-success">
+                            <i class="bi bi-wifi"></i> ONLINE
+                        </span>
+                        <span class="badge bg-info ms-2" id="connection-status">
+                            <i class="bi bi-link-45deg"></i> CONECTADO
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PAINEL PRINCIPAL -->
+            <div class="col-lg-9">
+                <div class="row g-4 h-100">
+                    
+                    <!-- DISPLAY DE CHAMADA -->
+                    <div class="col-md-7">
+                        <div class="text-center h-100 d-flex flex-column justify-content-center ticket-display" 
+                             id="painel-chamada-atual">
+                            <p class="h1 text-uppercase mb-3">
+                                <i class="bi bi-megaphone"></i> ATENDIMENTO ATUAL
+                            </p>
+                            <div class="my-4">
+                                <p class="h4 mb-3">SENHA CHAMADA:</p>
+                                <div id="chamada-numero" class="ticket-number">
+                                    T-106
+                                </div>
+                                <div class="mt-4">
+                                    <p class="h3 mb-2">DIRIJA-SE AO</p>
+                                    <div id="chamada-guiche" class="guiche-display">
+                                        GUICHÊ 4
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mt-4">
+                                <div class="info-box p-3">
+                                    <i class="bi bi-clock-history"></i> 
+                                    Chamada realizada às <span id="hora-chamada">14:30</span>
+                                    <br>
+                                    <small class="text-muted">Válido por: <span id="tempo-validade">5 minutos</span></small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CARROSSEL DE MÍDIA (MANUAL) -->
+                    <div class="col-md-5">
+                        <div class="h-100">
+                            <div class="info-box h-100">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h3 class="mb-0">
+                                        <i class="bi bi-images"></i> INFORMATIVOS
+                                    </h3>
+                                    <span class="badge bg-primary manual-badge">
+                                        <i class="bi bi-hand-index"></i> Navegação Manual
+                                    </span>
+                                </div>
+                                
+                                <!-- CARROSSEL MANUAL -->
+                                <div class="owl-carousel owl-theme" id="mediaCarouselManual">
+                                    <!-- Slide 1 -->
+                                    <div class="item">
+                                        <div class="media-placeholder">
+                                            <div class="text-center">
+                                                <i class="bi bi-play-circle display-1 mb-3"></i>
+                                                <h4>Vídeo Informativo</h4>
+                                                <p>Como utilizar nosso sistema</p>
+                                            </div>
+                                        </div>
+                                        <div class="mt-3 p-3 info-box">
+                                            <h5><i class="bi bi-info-circle"></i> Instruções</h5>
+                                            <p class="mb-0">Assista ao vídeo para entender o processo de atendimento.</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Slide 2 -->
+                                    <div class="item">
+                                        <div class="media-placeholder">
+                                            <div class="text-center">
+                                                <i class="bi bi-calendar-week display-1 mb-3"></i>
+                                                <h4>Horário de Funcionamento</h4>
+                                                <p>Segunda a Sexta: 8h às 18h</p>
+                                            </div>
+                                        </div>
+                                        <div class="mt-3 p-3 info-box">
+                                            <h5><i class="bi bi-clock"></i> Atendimento</h5>
+                                            <p class="mb-0">Sábados: 9h às 13h | Domingos: Fechado</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Slide 3 -->
+                                    <div class="item">
+                                        <div class="media-placeholder">
+                                            <div class="text-center">
+                                                <i class="bi bi-file-earmark-text display-1 mb-3"></i>
+                                                <h4>Documentos Necessários</h4>
+                                                <p>RG, CPF e comprovante</p>
+                                            </div>
+                                        </div>
+                                        <div class="mt-3 p-3 info-box">
+                                            <h5><i class="bi bi-card-checklist"></i> Documentação</h5>
+                                            <p class="mb-0">Tenha seus documentos em mãos para agilizar o atendimento.</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Slide 4 -->
+                                    <div class="item">
+                                        <div class="media-placeholder">
+                                            <div class="text-center">
+                                                <i class="bi bi-telephone display-1 mb-3"></i>
+                                                <h4>Contato</h4>
+                                                <p>(11) 99999-9999</p>
+                                            </div>
+                                        </div>
+                                        <div class="mt-3 p-3 info-box">
+                                            <h5><i class="bi bi-headset"></i> Suporte</h5>
+                                            <p class="mb-0">Estamos aqui para ajudar!</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- CONTROLES MANUAIS -->
+                                <div class="carousel-controls mt-3">
+                                    <button id="prevSlide" class="btn">
+                                        <i class="bi bi-chevron-left"></i>
+                                    </button>
+                                    <button id="pauseSlide" class="btn">
+                                        <i class="bi bi-pause-fill"></i>
+                                    </button>
+                                    <button id="nextSlide" class="btn">
+                                        <i class="bi bi-chevron-right"></i>
+                                    </button>
+                                </div>
+                                
+                                <div class="text-center mt-2">
+                                    <small class="text-light">
+                                        <i class="bi bi-mouse"></i> Use os botões para navegar | 
+                                        <span id="slide-counter">Slide 1/4</span>
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- INFORMAÇÕES DE ESPERA -->
+                    <div class="col-12 mt-4">
+                        <div class="info-box">
+                            <div class="row text-center align-items-center">
+                                <div class="col-md-4 mb-3 mb-md-0">
+                                    <h4 class="text-warning">
+                                        <i class="bi bi-clock-fill"></i> TEMPO DE ESPERA
+                                    </h4>
+                                    <div class="waiting-time mt-2" id="tempoEsperaDisplay">
+                                        15 minutos
+                                    </div>
+                                    <small class="text-light">Tempo estimado para atendimento</small>
+                                </div>
+                                
+                                <div class="col-md-4 mb-3 mb-md-0">
+                                    <h4 class="text-info">
+                                        <i class="bi bi-people-fill"></i> PESSOAS NA FILA
+                                    </h4>
+                                    <div class="queue-count mt-2" id="fila-contador">
+                                        7 pessoas
+                                    </div>
+                                    <div class="mt-2">
+                                        <button class="btn btn-sm btn-outline-light" id="btn-refresh-fila">
+                                            <i class="bi bi-arrow-clockwise"></i> Atualizar
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-4">
+                                    <h4 class="text-success">
+                                        <i class="bi bi-calendar-check"></i> DATA E HORA
+                                    </h4>
+                                    <div class="clock-display mt-2" id="dataHora">
+                                        14:30:45
+                                    </div>
+                                    <div class="h5 mt-1" id="dataCompleta">
+                                        Seg, 09 Dez 2024
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- HISTÓRICO E CATEGORIAS -->
+            <div class="col-lg-3">
+                <div class="row g-4 h-100">
+                    <!-- HISTÓRICO DE CHAMADAS -->
+                    <div class="col-12">
+                        <div class="info-box h-100">
+                            <h4 class="mb-3">
+                                <i class="bi bi-list-check"></i> ÚLTIMAS CHAMADAS
+                            </h4>
+                            <div id="historico-chamadas" class="list-group list-group-flush">
+                                <!-- Itens serão carregados via JavaScript -->
+                            </div>
+                            <div class="text-center mt-3">
+                                <small class="text-light">
+                                    <i class="bi bi-arrow-clockwise"></i> Atualizado em tempo real
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- LEGENDA DAS CATEGORIAS -->
+                    <div class="col-12">
+                        <div class="info-box">
+                            <h5 class="mb-3">
+                                <i class="bi bi-tags"></i> CATEGORIAS
+                            </h5>
+                            <div class="d-flex flex-wrap gap-2">
+                                <span class="category-badge badge-technical">
+                                    <i class="bi bi-tools"></i> Técnico
+                                </span>
+                                <span class="category-badge badge-financial">
+                                    <i class="bi bi-cash-coin"></i> Financeiro
+                                </span>
+                                <span class="category-badge badge-commercial">
+                                    <i class="bi bi-briefcase"></i> Comercial
+                                </span>
+                                <span class="category-badge badge-priority">
+                                    <i class="bi bi-star"></i> Prioridade
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- CONTROLES -->
+                    <div class="col-12">
+                        <div class="info-box text-center">
+                            <div class="btn-group w-100" role="group">
+                                <a href="atendimento.html" class="btn btn-outline-light" target="_blank">
+                                    <i class="bi bi-gear"></i> Painel de Controle
+                                </a>
+                                <a href="atendimento3.html" class="btn btn-outline-light" target="_blank">
+                                    <i class="bi bi-play-circle"></i> Modo Automático
+                                </a>
+                            </div>
+                            <small class="text-light mt-2 d-block">
+                                Sistema versão 2.0 | Modo Manual
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- RODAPÉ -->
+    <footer class="text-center py-3 mt-4">
+        <div class="info-box">
+            <p class="mb-0">
+                <i class="bi bi-cpu"></i> Sistema de Atendimento Público | 
+                <span id="system-status" class="text-success">● OPERACIONAL</span> |
+                Última atualização: <span id="last-update">há 2 minutos</span>
+            </p>
+        </div>
+    </footer>
+
+    <!-- SCRIPTS -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
+    
+    <script>
+        // ===== LÓGICA ESPECÍFICA PARA atendimento2.html (MANUAL) =====
+        $(document).ready(function(){
+            let carouselManual = null;
+            let isCarouselPaused = false;
+            let lastUpdateTime = new Date();
+            
+            // ===== INICIALIZAR CARROSSEL MANUAL =====
+            function inicializarCarrossel() {
+                carouselManual = $('#mediaCarouselManual').owlCarousel({
+                    items: 1,
+                    loop: true,
+                    autoplay: false,
+                    nav: false,
+                    dots: false,
+                    smartSpeed: 800
+                });
+                
+                $('#nextSlide').click(function() {
+                    carouselManual.trigger('next.owl.carousel');
+                });
+                
+                $('#prevSlide').click(function() {
+                    carouselManual.trigger('prev.owl.carousel');
+                });
+                
+                $('#pauseSlide').click(function() {
+                    const icon = $(this).find('i');
+                    if (isCarouselPaused) {
+                        icon.removeClass('bi-play-fill').addClass('bi-pause-fill');
+                        $(this).removeClass('btn-warning').addClass('btn-light');
+                        isCarouselPaused = false;
+                    } else {
+                        icon.removeClass('bi-pause-fill').addClass('bi-play-fill');
+                        $(this).removeClass('btn-light').addClass('btn-warning');
+                        isCarouselPaused = true;
+                    }
+                });
+                
+                carouselManual.on('changed.owl.carousel', function(event) {
+                    atualizarContadorSlide(event);
+                });
+                
+                carouselManual.on('initialized.owl.carousel', function(event) {
+                    atualizarContadorSlide(event);
+                });
+            }
+            
+            function atualizarContadorSlide(event) {
+                if (!event) return;
+                const current = event.item.index + 1;
+                const total = event.item.count;
+                $('#slide-counter').text(`Slide ${current}/${total}`);
+            }
+            
+            // ===== ATUALIZAR DATA/HORA =====
+            function atualizarDataHora() {
+                const now = new Date();
+                
+                document.getElementById('dataHora').textContent = 
+                    now.toLocaleTimeString('pt-BR', {hour12: false});
+                
+                document.getElementById('dataCompleta').textContent = 
+                    now.toLocaleDateString('pt-BR', {
+                        weekday: 'short',
+                        day: 'numeric',
+                        month: 'short',
+                        year: 'numeric'
+                    });
+                
+                const diffMinutes = Math.floor((new Date() - lastUpdateTime) / 60000);
+                if (diffMinutes === 0) {
+                    document.getElementById('last-update').textContent = 'agora';
+                } else {
+                    document.getElementById('last-update').textContent = 
+                        `há ${diffMinutes} minuto${diffMinutes > 1 ? 's' : ''}`;
+                }
+            }
+            
+            // ===== ATUALIZAR TEMPO DE ESPERA =====
+            function atualizarTempoEspera() {
+                const tempos = ['5 minutos', '8 minutos', '12 minutos', '15 minutos', '18 minutos'];
+                const randomTime = tempos[Math.floor(Math.random() * tempos.length)];
+                document.getElementById('tempoEsperaDisplay').textContent = randomTime;
+            }
+            
+            // ===== ATUALIZAR CONTADOR DA FILA =====
+            function atualizarContadorFila() {
+                const filaSalva = localStorage.getItem('filaEspera');
+                if (filaSalva) {
+                    const quantidade = parseInt(filaSalva);
+                    document.getElementById('fila-contador').textContent = 
+                        `${quantidade} ${quantidade === 1 ? 'pessoa' : 'pessoas'}`;
+                } else {
+                    const randomCount = Math.floor(Math.random() * 15) + 1;
+                    document.getElementById('fila-contador').textContent = 
+                        `${randomCount} pessoas`;
+                }
+            }
+            
+            $('#btn-refresh-fila').click(function() {
+                atualizarContadorFila();
+                lastUpdateTime = new Date();
+                atualizarDataHora();
+                
+                $(this).find('i').addClass('rotate');
+                setTimeout(() => {
+                    $(this).find('i').removeClass('rotate');
+                }, 500);
+            });
+            
+            // ===== CARREGAR HISTÓRICO INICIAL =====
+            function carregarHistoricoInicial() {
+                const historico = [
+                    { id: 'T-105', tipo: 'T', guiche: 3, hora: '14:25' },
+                    { id: 'F-042', tipo: 'F', guiche: 1, hora: '14:20' },
+                    { id: 'C-018', tipo: 'C', guiche: 2, hora: '14:15' },
+                    { id: 'T-104', tipo: 'T', guiche: 4, hora: '14:10' },
+                    { id: 'F-041', tipo: 'F', guiche: 3, hora: '14:05' }
+                ];
+                
+                const container = document.getElementById('historico-chamadas');
+                if (!container) return;
+                
+                container.innerHTML = '';
+                
+                historico.forEach(ticket => {
+                    const badgeClass = {
+                        'T': 'badge-technical',
+                        'F': 'badge-financial',
+                        'C': 'badge-commercial',
+                        'P': 'badge-priority'
+                    }[ticket.tipo] || 'bg-secondary';
+                    
+                    const tipoNome = {
+                        'T': 'Técnico',
+                        'F': 'Financeiro',
+                        'C': 'Comercial',
+                        'P': 'Prioridade'
+                    }[ticket.tipo] || 'Desconhecido';
+                    
+                    const item = document.createElement('div');
+                    item.className = 'history-item';
+                    item.innerHTML = `
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <span class="category-badge ${badgeClass} me-2">
+                                    ${ticket.id}
+                                </span>
+                                <small>${tipoNome}</small>
+                            </div>
+                            <div class="text-end">
+                                <div class="text-info">Guichê ${ticket.guiche}</div>
+                                <small class="text-light">${ticket.hora}</small>
+                            </div>
+                        </div>
+                    `;
+                    
+                    container.appendChild(item);
+                });
+            }
+            
+            // ===== MONITORAR TICKETS EM TEMPO REAL =====
+            function monitorarTickets() {
+                const ticketData = localStorage.getItem('currentTicket');
+                
+                if (ticketData) {
+                    try {
+                        const ticket = JSON.parse(ticketData);
+                        atualizarTicketAtual(ticket);
+                        adicionarAoHistorico(ticket);
+                        atualizarTempoValidade();
+                        
+                        document.getElementById('connection-status').innerHTML = 
+                            '<i class="bi bi-link-45deg"></i> RECEBENDO DADOS';
+                        
+                        setTimeout(() => {
+                            document.getElementById('connection-status').innerHTML = 
+                                '<i class="bi bi-link-45deg"></i> CONECTADO';
+                        }, 2000);
+                        
+                    } catch (e) {
+                        console.error('Erro ao processar ticket:', e);
+                    }
+                }
+            }
+            
+            function atualizarTicketAtual(ticket) {
+                const numeroElement = document.getElementById('chamada-numero');
+                const guicheElement = document.getElementById('chamada-guiche');
+                const horaElement = document.getElementById('hora-chamada');
+                
+                if (numeroElement) {
+                    numeroElement.style.opacity = '0.5';
+                    setTimeout(() => {
+                        numeroElement.textContent = ticket.id;
+                        numeroElement.style.opacity = '1';
+                        
+                        numeroElement.classList.add('ticket-animation');
+                        setTimeout(() => {
+                            numeroElement.classList.remove('ticket-animation');
+                        }, 1000);
+                    }, 300);
+                }
+                
+                if (guicheElement) {
+                    guicheElement.textContent = `GUICHÊ ${ticket.guiche}`;
+                }
+                
+                if (horaElement) {
+                    const now = new Date();
+                    horaElement.textContent = now.toLocaleTimeString('pt-BR', {
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    });
+                }
+                
+                atualizarTempoValidade();
+            }
+            
+            function adicionarAoHistorico(ticket) {
+                const container = document.getElementById('historico-chamadas');
+                if (!container) return;
+                
+                const badgeClass = {
+                    'T': 'badge-technical',
+                    'F': 'badge-financial',
+                    'C': 'badge-commercial',
+                    'P': 'badge-priority'
+                }[ticket.tipo] || 'bg-secondary';
+                
+                const tipoNome = {
+                    'T': 'Técnico',
+                    'F': 'Financeiro',
+                    'C': 'Comercial',
+                    'P': 'Prioridade'
+                }[ticket.tipo] || 'Desconhecido';
+                
+                const now = new Date();
+                const hora = now.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
+                
+                const item = document.createElement('div');
+                item.className = 'history-item';
+                item.innerHTML = `
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <span class="category-badge ${badgeClass} me-2">
+                                ${ticket.id}
+                            </span>
+                            <small>${tipoNome}</small>
+                        </div>
+                        <div class="text-end">
+                            <div class="text-info">Guichê ${ticket.guiche}</div>
+                            <small class="text-light">${hora}</small>
+                        </div>
+                    </div>
+                `;
+                
+                container.insertBefore(item, container.firstChild);
+                
+                if (container.children.length > 6) {
+                    container.removeChild(container.lastChild);
+                }
+            }
+            
+            function atualizarTempoValidade() {
+                const minutos = Math.floor(Math.random() * 10) + 1;
+                document.getElementById('tempo-validade').textContent = `${minutos} minutos`;
+            }
+            
+            // ===== MONITORAR MUDANÇAS NO LOCALSTORAGE =====
+            function configurarMonitoramento() {
+                window.addEventListener('storage', function(e) {
+                    if (e.key === 'currentTicket') {
+                        monitorarTickets();
+                        lastUpdateTime = new Date();
+                        atualizarDataHora();
+                    }
+                    if (e.key === 'filaEspera') {
+                        atualizarContadorFila();
+                    }
+                });
+                
+                setInterval(monitorarTickets, 2000);
+            }
+            
+            // ===== INICIALIZAÇÃO =====
+            function inicializarSistema() {
+                console.log('🔄 Inicializando Painel Público Manual...');
+                
+                inicializarCarrossel();
+                carregarHistoricoInicial();
+                atualizarDataHora();
+                atualizarTempoEspera();
+                atualizarContadorFila();
+                atualizarTempoValidade();
+                configurarMonitoramento();
+                monitorarTickets();
+                
+                setInterval(atualizarDataHora, 1000);
+                setInterval(atualizarTempoEspera, 45000);
+                setInterval(atualizarContadorFila, 30000);
+                
+                console.log('✅ Painel Público Manual inicializado!');
+            }
+            
+            inicializarSistema();
+            
+            // Adicionar CSS para animação de rotação
+            const style = document.createElement('style');
+            style.textContent = `
+                .rotate {
+                    animation: rotate 0.5s linear;
+                }
+                
+                @keyframes rotate {
+                    from { transform: rotate(0deg); }
+                    to { transform: rotate(360deg); }
+                }
+                
+                .ticket-animation {
+                    animation: ticketPop 0.5s ease-out;
+                }
+                
+                @keyframes ticketPop {
+                    0% { transform: scale(0.8); opacity: 0; }
+                    70% { transform: scale(1.05); }
+                    100% { transform: scale(1); opacity: 1; }
+                }
+            `;
+            document.head.appendChild(style);
+        });
+    </script>
+</body>
+</html>

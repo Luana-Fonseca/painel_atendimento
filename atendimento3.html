@@ -1,0 +1,1125 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Público - Display Automático | Sistema de Atendimento</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="style.css">
+    <link href="script.js">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        /* Estilos específicos para atendimento3.html */
+        body.public-display {
+            background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+            min-height: 100vh;
+            font-family: 'Roboto', sans-serif;
+            color: white;
+            overflow-x: hidden;
+        }
+        
+        .auto-carousel-indicator {
+            position: absolute;
+            bottom: 15px;
+            right: 15px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            z-index: 10;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .auto-timer {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 10px;
+            padding: 10px 15px;
+            color: white;
+            font-weight: bold;
+            z-index: 10;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .media-placeholder-auto {
+            background: rgba(255, 255, 255, 0.05);
+            height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 15px;
+            position: relative;
+            overflow: hidden;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+        }
+        
+        .media-placeholder-auto::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                45deg,
+                transparent 30%,
+                rgba(255, 255, 255, 0.05) 50%,
+                transparent 70%
+            );
+            animation: shimmer 3s infinite linear;
+        }
+        
+        @keyframes shimmer {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+        
+        .ticket-display-auto {
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), rgba(255, 165, 0, 0.1));
+            border: 3px solid rgba(255, 215, 0, 0.3);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            animation: glow 2s infinite alternate;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        @keyframes glow {
+            from { box-shadow: 0 0 20px rgba(255, 215, 0, 0.3); }
+            to { box-shadow: 0 0 40px rgba(255, 215, 0, 0.6); }
+        }
+        
+        .info-box-auto {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            padding: 25px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .progress-timer {
+            height: 5px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+        
+        .progress-timer-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #00b4db, #0083b0);
+            width: 0%;
+            transition: width 0.1s linear;
+            border-radius: 10px;
+        }
+        
+        .auto-badge {
+            animation: pulse-badge 1.5s infinite;
+        }
+        
+        @keyframes pulse-badge {
+            0% { opacity: 1; }
+            50% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
+        
+        .ticket-number-auto {
+            font-size: 8rem;
+            font-weight: 900;
+            color: #FFD700;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.5);
+            margin: 20px 0;
+            animation: pulseNumberAuto 2s ease-in-out infinite;
+        }
+        
+        @keyframes pulseNumberAuto {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); text-shadow: 3px 3px 8px rgba(255, 215, 0, 0.8); }
+            100% { transform: scale(1); }
+        }
+        
+        .guiche-display-auto {
+            font-size: 2.5rem;
+            font-weight: 600;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 10px 30px;
+            border-radius: 15px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(5px);
+        }
+        
+        .waiting-time-auto {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #FFD700;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            background: linear-gradient(45deg, rgba(255, 215, 0, 0.1), rgba(255, 165, 0, 0.1));
+            padding: 10px 20px;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 215, 0, 0.2);
+        }
+        
+        .queue-count-auto {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #20C997;
+            background: linear-gradient(45deg, rgba(32, 201, 151, 0.1), rgba(23, 162, 184, 0.1));
+            padding: 10px 20px;
+            border-radius: 15px;
+            border: 1px solid rgba(32, 201, 151, 0.2);
+        }
+        
+        .clock-display-auto {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #17A2B8;
+            background: linear-gradient(45deg, rgba(23, 162, 184, 0.1), rgba(0, 123, 255, 0.1));
+            padding: 10px 20px;
+            border-radius: 15px;
+            border: 1px solid rgba(23, 162, 184, 0.2);
+        }
+        
+        .history-item-auto {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            margin-bottom: 10px;
+            padding: 15px;
+            transition: all 0.3s;
+            backdrop-filter: blur(5px);
+        }
+        
+        .history-item-auto:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .speed-control {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 10px;
+            margin: 5px 0;
+            transition: all 0.3s;
+        }
+        
+        .speed-control:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+        
+        .auto-flash {
+            animation: flash 0.5s ease;
+        }
+        
+        @keyframes flash {
+            0% { background-color: inherit; }
+            50% { background-color: rgba(255, 255, 255, 0.2); }
+            100% { background-color: inherit; }
+        }
+        
+        .gradient-warning {
+            background: linear-gradient(45deg, #ffd700, #ffa500) !important;
+            color: #333 !important;
+        }
+        
+        .gradient-info {
+            background: linear-gradient(45deg, #00b4db, #0083b0) !important;
+            color: white !important;
+        }
+        
+        .gradient-success {
+            background: linear-gradient(45deg, #28a745, #20c997) !important;
+            color: white !important;
+        }
+        
+        .gradient-primary {
+            background: linear-gradient(45deg, #007bff, #6610f2) !important;
+            color: white !important;
+        }
+        
+        .gradient-danger {
+            background: linear-gradient(45deg, #dc3545, #c82333) !important;
+            color: white !important;
+        }
+    </style>
+</head>
+<body class="public-display">
+    <div class="container-fluid py-4">
+        <div class="row g-4">
+            
+            <!-- CABEÇALHO -->
+            <div class="col-12 text-center mb-4">
+                <div class="info-box-auto">
+                    <h1 class="display-4 fw-bold mb-2">
+                        <i class="bi bi-display"></i> PAINEL AUTOMÁTICO
+                    </h1>
+                    <p class="lead mb-0">Sistema de exibição automática de informações</p>
+                    <div class="mt-3">
+                        <span class="badge gradient-success auto-badge me-2">
+                            <i class="bi bi-play-circle"></i> MODO AUTOMÁTICO ATIVO
+                        </span>
+                        <span class="badge gradient-info">
+                            <i class="bi bi-arrow-repeat"></i> Transição: 7 segundos
+                        </span>
+                        <span class="badge gradient-primary ms-2" id="connection-status-auto">
+                            <i class="bi bi-wifi"></i> SINCRONIZADO
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PAINEL PRINCIPAL -->
+            <div class="col-lg-9">
+                <div class="row g-4 h-100">
+                    
+                    <!-- DISPLAY DE CHAMADA -->
+                    <div class="col-md-7">
+                        <div class="text-center h-100 d-flex flex-column justify-content-center ticket-display-auto" 
+                             id="painel-chamada-atual-auto">
+                            <p class="h1 text-uppercase mb-3">
+                                <i class="bi bi-broadcast"></i> ATENDIMENTO EM ANDAMENTO
+                            </p>
+                            <div class="my-4">
+                                <p class="h4 mb-3 text-light">SENHA ATUAL:</p>
+                                <div id="chamada-numero-auto" class="ticket-number-auto">
+                                    T-106
+                                </div>
+                                <div class="mt-4">
+                                    <p class="h3 mb-2 text-light">LOCAL DE ATENDIMENTO:</p>
+                                    <div id="chamada-guiche-auto" class="guiche-display-auto">
+                                        GUICHÊ 4
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mt-4">
+                                <div class="info-box-auto p-3">
+                                    <i class="bi bi-exclamation-triangle"></i> 
+                                    Senha válida por mais <span id="tempo-validade-auto">5 minutos</span>
+                                    <br>
+                                    <small class="text-muted">Próxima atualização automática em: <span id="next-update">30s</span></small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CARROSSEL DE MÍDIA (AUTOMÁTICO) -->
+                    <div class="col-md-5">
+                        <div class="h-100 position-relative">
+                            <div class="auto-timer">
+                                <i class="bi bi-clock"></i> 
+                                <span id="carousel-timer">07s</span>
+                            </div>
+                            
+                            <div class="info-box-auto h-100">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h3 class="mb-0">
+                                        <i class="bi bi-play-btn"></i> CARROSSEL AUTOMÁTICO
+                                    </h3>
+                                    <div class="btn-group">
+                                        <button id="btn-toggle-auto" class="btn btn-sm gradient-success">
+                                            <i class="bi bi-pause-fill"></i> Pausar
+                                        </button>
+                                        <button id="btn-speed-slow" class="btn btn-sm btn-outline-light">
+                                            <i class="bi bi-speedometer"></i> Lento
+                                        </button>
+                                        <button id="btn-speed-fast" class="btn btn-sm btn-outline-light">
+                                            <i class="bi bi-speedometer2"></i> Rápido
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <!-- Indicador de slide atual -->
+                                <div class="auto-carousel-indicator">
+                                    Slide: <span id="current-slide">1</span>/<span id="total-slides">5</span>
+                                </div>
+                                
+                                <!-- CARROSSEL AUTOMÁTICO -->
+                                <div class="owl-carousel owl-theme" id="mediaCarouselAuto">
+                                    <!-- Slide 1 -->
+                                    <div class="item">
+                                        <div class="media-placeholder-auto">
+                                            <div class="text-center position-relative z-2">
+                                                <i class="bi bi-camera-video display-1 mb-3"></i>
+                                                <h4>Vídeo Institucional</h4>
+                                                <p>Conheça nossos serviços</p>
+                                            </div>
+                                        </div>
+                                        <div class="progress-timer mt-2">
+                                            <div class="progress-timer-bar" id="timer-bar-1"></div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Slide 2 -->
+                                    <div class="item">
+                                        <div class="media-placeholder-auto">
+                                            <div class="text-center position-relative z-2">
+                                                <i class="bi bi-calendar-week display-1 mb-3"></i>
+                                                <h4>Horários Especiais</h4>
+                                                <p>Sábados: 9h às 13h</p>
+                                            </div>
+                                        </div>
+                                        <div class="progress-timer mt-2">
+                                            <div class="progress-timer-bar" id="timer-bar-2"></div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Slide 3 -->
+                                    <div class="item">
+                                        <div class="media-placeholder-auto">
+                                            <div class="text-center position-relative z-2">
+                                                <i class="bi bi-file-earmark-text display-1 mb-3"></i>
+                                                <h4>Documentação</h4>
+                                                <p>Leve documentos originais</p>
+                                            </div>
+                                        </div>
+                                        <div class="progress-timer mt-2">
+                                            <div class="progress-timer-bar" id="timer-bar-3"></div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Slide 4 -->
+                                    <div class="item">
+                                        <div class="media-placeholder-auto">
+                                            <div class="text-center position-relative z-2">
+                                                <i class="bi bi-gift display-1 mb-3"></i>
+                                                <h4>Ofertas Exclusivas</h4>
+                                                <p>Condições especiais vigentes</p>
+                                            </div>
+                                        </div>
+                                        <div class="progress-timer mt-2">
+                                            <div class="progress-timer-bar" id="timer-bar-4"></div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Slide 5 -->
+                                    <div class="item">
+                                        <div class="media-placeholder-auto">
+                                            <div class="text-center position-relative z-2">
+                                                <i class="bi bi-telephone display-1 mb-3"></i>
+                                                <h4>Fale Conosco</h4>
+                                                <p>(11) 99999-9999</p>
+                                            </div>
+                                        </div>
+                                        <div class="progress-timer mt-2">
+                                            <div class="progress-timer-bar" id="timer-bar-5"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- CONTROLES DO CARROSSEL AUTOMÁTICO -->
+                                <div class="row mt-4">
+                                    <div class="col-6">
+                                        <div class="speed-control">
+                                            <label class="form-label">
+                                                <i class="bi bi-speedometer"></i> Velocidade:
+                                            </label>
+                                            <select id="speed-selector" class="form-select bg-dark text-white border-0">
+                                                <option value="5000">5 segundos</option>
+                                                <option value="7000" selected>7 segundos</option>
+                                                <option value="10000">10 segundos</option>
+                                                <option value="15000">15 segundos</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="speed-control">
+                                            <label class="form-label">
+                                                <i class="bi bi-arrow-repeat"></i> Modo:
+                                            </label>
+                                            <select id="mode-selector" class="form-select bg-dark text-white border-0">
+                                                <option value="loop" selected>Contínuo</option>
+                                                <option value="once">Uma vez</option>
+                                                <option value="rewind">Reiniciar</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- INFORMAÇÕES DE ESPERA -->
+                    <div class="col-12 mt-4">
+                        <div class="info-box-auto">
+                            <div class="row text-center align-items-center">
+                                <div class="col-md-4 mb-3 mb-md-0">
+                                    <h4 class="text-warning">
+                                        <i class="bi bi-hourglass-split"></i> ESPERA ESTIMADA
+                                    </h4>
+                                    <div class="waiting-time-auto mt-2" id="tempoEsperaDisplayAuto">
+                                        ~ 18 minutos
+                                    </div>
+                                    <small class="text-light">Atualizado automaticamente</small>
+                                </div>
+                                
+                                <div class="col-md-4 mb-3 mb-md-0">
+                                    <h4 class="text-info">
+                                        <i class="bi bi-person-bounding-box"></i> FILA DE ESPERA
+                                    </h4>
+                                    <div class="queue-count-auto mt-2" id="fila-contador-auto">
+                                        9 pessoas
+                                    </div>
+                                    <div class="mt-2">
+                                        <button class="btn btn-sm btn-outline-light" id="btn-refresh-fila-auto">
+                                            <i class="bi bi-arrow-clockwise"></i> Atualizar
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-4">
+                                    <h4 class="text-success">
+                                        <i class="bi bi-stopwatch"></i> RELÓGIO
+                                    </h4>
+                                    <div class="clock-display-auto mt-2" id="dataHoraAuto">
+                                        14:30:45
+                                    </div>
+                                    <div class="h5 mt-2" id="dataCompletaAuto">
+                                        Seg, 09 Dez 2024
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- HISTÓRICO E ESTATÍSTICAS -->
+            <div class="col-lg-3">
+                <div class="row g-4 h-100">
+                    <!-- HISTÓRICO EM TEMPO REAL -->
+                    <div class="col-12">
+                        <div class="info-box-auto h-100">
+                            <h4 class="mb-3">
+                                <i class="bi bi-activity"></i> HISTÓRICO AO VIVO
+                            </h4>
+                            <div id="historico-tempo-real" class="list-group list-group-flush" 
+                                 style="max-height: 300px; overflow-y: auto;">
+                                <!-- Itens serão adicionados via JavaScript -->
+                            </div>
+                            <div class="text-center mt-3">
+                                <small class="text-light">
+                                    <i class="bi bi-lightning-charge"></i> Atualizado em tempo real
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- ESTATÍSTICAS DO DIA -->
+                    <div class="col-12">
+                        <div class="info-box-auto">
+                            <h5 class="mb-3">
+                                <i class="bi bi-graph-up-arrow"></i> ESTATÍSTICAS HOJE
+                            </h5>
+                            <div class="row text-center">
+                                <div class="col-6 mb-3">
+                                    <div class="p-3 speed-control">
+                                        <h6 class="text-warning">TÉCNICO</h6>
+                                        <h4 class="mb-0" id="stat-tecnico">24</h4>
+                                    </div>
+                                </div>
+                                <div class="col-6 mb-3">
+                                    <div class="p-3 speed-control">
+                                        <h6 class="text-success">FINANCEIRO</h6>
+                                        <h4 class="mb-0" id="stat-financeiro">18</h4>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="p-3 speed-control">
+                                        <h6 class="text-primary">COMERCIAL</h6>
+                                        <h4 class="mb-0" id="stat-comercial">12</h4>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="p-3 speed-control">
+                                        <h6 class="text-danger">PRIORIDADE</h6>
+                                        <h4 class="mb-0" id="stat-prioridade">6</h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- CONTROLES -->
+                    <div class="col-12">
+                        <div class="info-box-auto text-center">
+                            <div class="btn-group w-100" role="group">
+                                <a href="atendimento.html" class="btn btn-outline-light" target="_blank">
+                                    <i class="bi bi-gear"></i> Controle
+                                </a>
+                                <a href="atendimento2.html" class="btn btn-outline-light" target="_blank">
+                                    <i class="bi bi-hand-index"></i> Manual
+                                </a>
+                                <button id="btn-fullscreen" class="btn btn-outline-light">
+                                    <i class="bi bi-fullscreen"></i> Tela Cheia
+                                </button>
+                            </div>
+                            <small class="text-light mt-2 d-block">
+                                Sistema versão 3.0 | Modo Automático
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- RODAPÉ -->
+    <footer class="text-center py-3 mt-4">
+        <div class="info-box-auto">
+            <p class="mb-0">
+                <i class="bi bi-cpu"></i> Sistema Automático v3.0 | 
+                <span id="system-status-auto" class="text-success">● OPERACIONAL</span> |
+                Última sincronização: <span id="sync-time">agora</span> |
+                Próxima: <span id="next-sync">em 30s</span>
+            </p>
+        </div>
+    </footer>
+
+    <!-- SCRIPTS -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
+    
+    <script>
+        // ===== LÓGICA ESPECÍFICA PARA atendimento3.html (AUTOMÁTICO) =====
+        $(document).ready(function(){
+            let carouselAuto = null;
+            let currentSpeed = 7000;
+            let isCarouselPaused = false;
+            let syncInterval = null;
+            let nextSyncTime = 30;
+            let lastTicketUpdate = null;
+            
+            // ===== INICIALIZAR CARROSSEL AUTOMÁTICO =====
+            function inicializarCarrosselAuto() {
+                carouselAuto = $('#mediaCarouselAuto').owlCarousel({
+                    items: 1,
+                    loop: true,
+                    autoplay: true,
+                    autoplayTimeout: currentSpeed,
+                    autoplayHoverPause: false,
+                    nav: false,
+                    dots: false,
+                    smartSpeed: 800,
+                    touchDrag: false,
+                    mouseDrag: false,
+                    onInitialized: atualizarContadorSlideAuto,
+                    onChanged: atualizarContadorSlideAuto,
+                    onTranslate: reiniciarBarraProgresso,
+                    onTranslated: iniciarBarraProgresso
+                });
+                
+                $('#speed-selector').change(function() {
+                    currentSpeed = parseInt($(this).val());
+                    carouselAuto.data('owl.carousel').settings.autoplayTimeout = currentSpeed;
+                    carouselAuto.trigger('stop.owl.autoplay');
+                    carouselAuto.trigger('play.owl.autoplay', [currentSpeed]);
+                    atualizarTimerDisplay();
+                });
+                
+                $('#mode-selector').change(function() {
+                    const mode = $(this).val();
+                    carouselAuto.data('owl.carousel').settings.loop = (mode === 'loop');
+                    carouselAuto.trigger('refresh.owl.carousel');
+                });
+                
+                $('#btn-toggle-auto').click(function() {
+                    const icon = $(this).find('i');
+                    
+                    if (isCarouselPaused) {
+                        carouselAuto.trigger('play.owl.autoplay', [currentSpeed]);
+                        icon.removeClass('bi-play-fill').addClass('bi-pause-fill');
+                        $(this).removeClass('btn-danger').addClass('gradient-success');
+                        $('#system-status-auto').text('● OPERACIONAL').removeClass('text-danger').addClass('text-success');
+                        isCarouselPaused = false;
+                    } else {
+                        carouselAuto.trigger('stop.owl.autoplay');
+                        icon.removeClass('bi-pause-fill').addClass('bi-play-fill');
+                        $(this).removeClass('gradient-success').addClass('btn-danger');
+                        $('#system-status-auto').text('⏸ PAUSADO').removeClass('text-success').addClass('text-danger');
+                        isCarouselPaused = true;
+                    }
+                });
+                
+                $('#btn-speed-slow').click(function() {
+                    $('#speed-selector').val('10000').trigger('change');
+                });
+                
+                $('#btn-speed-fast').click(function() {
+                    $('#speed-selector').val('5000').trigger('change');
+                });
+            }
+            
+            function atualizarContadorSlideAuto(event) {
+                if (!event) return;
+                const current = event.item.index + 1;
+                const total = event.item.count;
+                $('#current-slide').text(current);
+                $('#total-slides').text(total);
+            }
+            
+            function reiniciarBarraProgresso() {
+                $('.progress-timer-bar').css('width', '0%');
+            }
+            
+            function iniciarBarraProgresso(event) {
+                if (!event) return;
+                const currentSlide = event.item.index + 1;
+                const barId = `#timer-bar-${currentSlide}`;
+                $(barId).css('width', '100%');
+                $(barId).css('transition', `width ${currentSpeed}ms linear`);
+            }
+            
+            function atualizarTimerDisplay() {
+                const seconds = currentSpeed / 1000;
+                $('#carousel-timer').text(`${seconds}s`);
+            }
+            
+            // ===== ATUALIZAR DATA/HORA =====
+            function atualizarDataHoraAuto() {
+                const now = new Date();
+                
+                document.getElementById('dataHoraAuto').textContent = 
+                    now.toLocaleTimeString('pt-BR', {hour12: false});
+                
+                document.getElementById('dataCompletaAuto').textContent = 
+                    now.toLocaleDateString('pt-BR', {
+                        weekday: 'short',
+                        day: 'numeric',
+                        month: 'short',
+                        year: 'numeric'
+                    });
+                
+                atualizarProximoSync();
+            }
+            
+            // ===== SINCRONIZAÇÃO =====
+            function atualizarSyncTime() {
+                const now = new Date();
+                const hora = now.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
+                $('#sync-time').text(hora);
+            }
+            
+            function atualizarProximoSync() {
+                if (nextSyncTime <= 0) {
+                    nextSyncTime = 30;
+                    realizarSincronismo();
+                }
+                $('#next-sync').text(`em ${nextSyncTime}s`);
+                $('#next-update').text(`${nextSyncTime}s`);
+                nextSyncTime--;
+            }
+            
+            function realizarSincronismo() {
+                atualizarContadorFilaAuto();
+                atualizarTempoEsperaAuto();
+                atualizarEstatisticas();
+                
+                $('#connection-status-auto').html('<i class="bi bi-wifi"></i> SINCRONIZANDO...');
+                $('#connection-status-auto').addClass('auto-flash');
+                
+                setTimeout(() => {
+                    $('#connection-status-auto').html('<i class="bi bi-wifi"></i> SINCRONIZADO');
+                    $('#connection-status-auto').removeClass('auto-flash');
+                }, 1000);
+                
+                atualizarSyncTime();
+            }
+            
+            // ===== ATUALIZAR TEMPO DE ESPERA =====
+            function atualizarTempoEsperaAuto() {
+                const tempos = ['~ 12 minutos', '~ 15 minutos', '~ 18 minutos', '~ 21 minutos', '~ 24 minutos'];
+                const randomTime = tempos[Math.floor(Math.random() * tempos.length)];
+                document.getElementById('tempoEsperaDisplayAuto').textContent = randomTime;
+            }
+            
+            // ===== ATUALIZAR CONTADOR DA FILA =====
+            function atualizarContadorFilaAuto() {
+                const filaSalva = localStorage.getItem('filaEspera');
+                if (filaSalva) {
+                    const quantidade = parseInt(filaSalva);
+                    document.getElementById('fila-contador-auto').textContent = 
+                        `${quantidade} ${quantidade === 1 ? 'pessoa' : 'pessoas'}`;
+                } else {
+                    const randomCount = Math.floor(Math.random() * 15) + 1;
+                    document.getElementById('fila-contador-auto').textContent = 
+                        `${randomCount} pessoas`;
+                }
+            }
+            
+            $('#btn-refresh-fila-auto').click(function() {
+                atualizarContadorFilaAuto();
+                atualizarTempoEsperaAuto();
+                
+                $(this).find('i').addClass('rotate-fast');
+                setTimeout(() => {
+                    $(this).find('i').removeClass('rotate-fast');
+                }, 500);
+            });
+            
+            // ===== ATUALIZAR ESTATÍSTICAS =====
+            function atualizarEstatisticas() {
+                const incrementos = [0, 1, 2];
+                const incremento = incrementos[Math.floor(Math.random() * incrementos.length)];
+                
+                const elementos = {
+                    '#stat-tecnico': 24,
+                    '#stat-financeiro': 18,
+                    '#stat-comercial': 12,
+                    '#stat-prioridade': 6
+                };
+                
+                Object.keys(elementos).forEach(selector => {
+                    const elemento = $(selector);
+                    if (elemento.length) {
+                        const valorAtual = parseInt(elemento.text()) || elementos[selector];
+                        if (Math.random() > 0.7) {
+                            elemento.text(valorAtual + incremento);
+                            elemento.parent().addClass('auto-flash');
+                            setTimeout(() => {
+                                elemento.parent().removeClass('auto-flash');
+                            }, 500);
+                        }
+                    }
+                });
+            }
+            
+            // ===== MONITORAR TICKETS EM TEMPO REAL =====
+            function monitorarTicketsAuto() {
+                const ticketData = localStorage.getItem('currentTicket');
+                
+                if (ticketData) {
+                    try {
+                        const ticket = JSON.parse(ticketData);
+                        
+                        if (!lastTicketUpdate || ticket.id !== lastTicketUpdate) {
+                            atualizarTicketAtualAuto(ticket);
+                            adicionarAoHistoricoAuto(ticket);
+                            atualizarEstatisticaCategoria(ticket.tipo);
+                            atualizarTempoValidadeAuto();
+                            
+                            lastTicketUpdate = ticket.id;
+                            fazerSomChamadaAuto();
+                        }
+                        
+                    } catch (e) {
+                        console.error('Erro ao processar ticket:', e);
+                    }
+                }
+            }
+            
+            function atualizarTicketAtualAuto(ticket) {
+                const numeroElement = document.getElementById('chamada-numero-auto');
+                const guicheElement = document.getElementById('chamada-guiche-auto');
+                
+                if (numeroElement) {
+                    numeroElement.style.opacity = '0.5';
+                    numeroElement.style.transform = 'scale(0.9)';
+                    
+                    setTimeout(() => {
+                        numeroElement.textContent = ticket.id;
+                        numeroElement.style.opacity = '1';
+                        numeroElement.style.transform = 'scale(1)';
+                        
+                        numeroElement.classList.add('ticket-animation-auto');
+                        setTimeout(() => {
+                            numeroElement.classList.remove('ticket-animation-auto');
+                        }, 1000);
+                    }, 300);
+                }
+                
+                if (guicheElement) {
+                    guicheElement.textContent = `GUICHÊ ${ticket.guiche}`;
+                }
+                
+                const now = new Date();
+                $('#hora-chamada-auto').text(now.toLocaleTimeString('pt-BR', {
+                    hour: '2-digit',
+                    minute: '2-digit'
+                }));
+            }
+            
+            function adicionarAoHistoricoAuto(ticket) {
+                const container = document.getElementById('historico-tempo-real');
+                if (!container) return;
+                
+                const badgeClass = {
+                    'T': 'gradient-warning',
+                    'F': 'gradient-success',
+                    'C': 'gradient-primary',
+                    'P': 'gradient-danger'
+                }[ticket.tipo] || 'bg-secondary';
+                
+                const tipoNome = {
+                    'T': 'Técnico',
+                    'F': 'Financeiro',
+                    'C': 'Comercial',
+                    'P': 'Prioridade'
+                }[ticket.tipo] || 'Desconhecido';
+                
+                const now = new Date();
+                const hora = now.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
+                
+                const item = document.createElement('div');
+                item.className = 'history-item-auto';
+                item.innerHTML = `
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <span class="badge ${badgeClass} me-2">
+                                ${ticket.id}
+                            </span>
+                            <small>${tipoNome}</small>
+                        </div>
+                        <div class="text-end">
+                            <div class="text-info">Guichê ${ticket.guiche}</div>
+                            <small class="text-light">${hora}</small>
+                        </div>
+                    </div>
+                `;
+                
+                item.style.opacity = '0';
+                item.style.transform = 'translateY(-20px)';
+                container.insertBefore(item, container.firstChild);
+                
+                setTimeout(() => {
+                    item.style.opacity = '1';
+                    item.style.transform = 'translateY(0)';
+                    item.style.transition = 'all 0.3s ease';
+                }, 10);
+                
+                if (container.children.length > 8) {
+                    const ultimoItem = container.lastChild;
+                    ultimoItem.style.opacity = '0';
+                    ultimoItem.style.transform = 'translateY(20px)';
+                    setTimeout(() => {
+                        if (container.contains(ultimoItem)) {
+                            container.removeChild(ultimoItem);
+                        }
+                    }, 300);
+                }
+            }
+            
+            function atualizarEstatisticaCategoria(tipo) {
+                const selectors = {
+                    'T': '#stat-tecnico',
+                    'F': '#stat-financeiro',
+                    'C': '#stat-comercial',
+                    'P': '#stat-prioridade'
+                };
+                
+                const selector = selectors[tipo];
+                if (selector) {
+                    const elemento = $(selector);
+                    if (elemento.length) {
+                        const valorAtual = parseInt(elemento.text()) || 0;
+                        elemento.text(valorAtual + 1);
+                        elemento.parent().addClass('auto-flash');
+                        setTimeout(() => {
+                            elemento.parent().removeClass('auto-flash');
+                        }, 500);
+                    }
+                }
+            }
+            
+            function atualizarTempoValidadeAuto() {
+                const minutos = Math.floor(Math.random() * 10) + 1;
+                document.getElementById('tempo-validade-auto').textContent = `${minutos} minutos`;
+            }
+            
+            function fazerSomChamadaAuto() {
+                try {
+                    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                    const oscillator = audioContext.createOscillator();
+                    const gainNode = audioContext.createGain();
+                    
+                    oscillator.connect(gainNode);
+                    gainNode.connect(audioContext.destination);
+                    
+                    oscillator.frequency.setValueAtTime(600, audioContext.currentTime);
+                    oscillator.frequency.setValueAtTime(700, audioContext.currentTime + 0.1);
+                    oscillator.frequency.setValueAtTime(600, audioContext.currentTime + 0.2);
+                    
+                    gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.4);
+                    
+                    oscillator.start();
+                    oscillator.stop(audioContext.currentTime + 0.4);
+                } catch (e) {
+                    console.log('Audio não disponível');
+                }
+            }
+            
+            // ===== TELA CHEIA =====
+            function configurarTelaCheia() {
+                $('#btn-fullscreen').click(function() {
+                    const elem = document.documentElement;
+                    
+                    if (!document.fullscreenElement) {
+                        if (elem.requestFullscreen) {
+                            elem.requestFullscreen();
+                        } else if (elem.webkitRequestFullscreen) {
+                            elem.webkitRequestFullscreen();
+                        } else if (elem.msRequestFullscreen) {
+                            elem.msRequestFullscreen();
+                        }
+                        $(this).find('i').removeClass('bi-fullscreen').addClass('bi-fullscreen-exit');
+                    } else {
+                        if (document.exitFullscreen) {
+                            document.exitFullscreen();
+                        } else if (document.webkitExitFullscreen) {
+                            document.webkitExitFullscreen();
+                        } else if (document.msExitFullscreen) {
+                            document.msExitFullscreen();
+                        }
+                        $(this).find('i').removeClass('bi-fullscreen-exit').addClass('bi-fullscreen');
+                    }
+                });
+            }
+            
+            // ===== MONITORAR MUDANÇAS NO LOCALSTORAGE =====
+            function configurarMonitoramentoAuto() {
+                window.addEventListener('storage', function(e) {
+                    if (e.key === 'currentTicket') {
+                        monitorarTicketsAuto();
+                    }
+                    if (e.key === 'filaEspera') {
+                        atualizarContadorFilaAuto();
+                    }
+                });
+                
+                setInterval(monitorarTicketsAuto, 1000);
+            }
+            
+            // ===== INICIALIZAÇÃO =====
+            function inicializarSistemaAuto() {
+                console.log('🔄 Inicializando Painel Público Automático...');
+                
+                inicializarCarrosselAuto();
+                configurarTelaCheia();
+                carregarHistoricoInicialAuto();
+                atualizarDataHoraAuto();
+                atualizarTempoEsperaAuto();
+                atualizarContadorFilaAuto();
+                atualizarTempoValidadeAuto();
+                atualizarTimerDisplay();
+                atualizarSyncTime();
+                configurarMonitoramentoAuto();
+                monitorarTicketsAuto();
+                
+                setInterval(atualizarDataHoraAuto, 1000);
+                setInterval(atualizarTempoEsperaAuto, 45000);
+                setInterval(atualizarContadorFilaAuto, 30000);
+                setInterval(atualizarProximoSync, 1000);
+                
+                syncInterval = setInterval(realizarSincronismo, 30000);
+                
+                console.log('✅ Painel Público Automático inicializado!');
+            }
+            
+            function carregarHistoricoInicialAuto() {
+                const historico = [
+                    { id: 'T-105', tipo: 'T', guiche: 3, hora: '14:25' },
+                    { id: 'F-042', tipo: 'F', guiche: 1, hora: '14:20' },
+                    { id: 'C-018', tipo: 'C', guiche: 2, hora: '14:15' },
+                    { id: 'T-104', tipo: 'T', guiche: 4, hora: '14:10' },
+                    { id: 'F-041', tipo: 'F', guiche: 3, hora: '14:05' },
+                    { id: 'T-103', tipo: 'T', guiche: 2, hora: '14:00' }
+                ];
+                
+                const container = document.getElementById('historico-tempo-real');
+                if (!container) return;
+                
+                container.innerHTML = '';
+                
+                historico.forEach(ticket => {
+                    const badgeClass = {
+                        'T': 'gradient-warning',
+                        'F': 'gradient-success',
+                        'C': 'gradient-primary',
+                        'P': 'gradient-danger'
+                    }[ticket.tipo] || 'bg-secondary';
+                    
+                    const tipoNome = {
+                        'T': 'Técnico',
+                        'F': 'Financeiro',
+                        'C': 'Comercial',
+                        'P': 'Prioridade'
+                    }[ticket.tipo] || 'Desconhecido';
+                    
+                    const item = document.createElement('div');
+                    item.className = 'history-item-auto';
+                    item.innerHTML = `
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <span class="badge ${badgeClass} me-2">
+                                    ${ticket.id}
+                                </span>
+                                <small>${tipoNome}</small>
+                            </div>
+                            <div class="text-end">
+                                <div class="text-info">Guichê ${ticket.guiche}</div>
+                                <small class="text-light">${ticket.hora}</small>
+                            </div>
+                        </div>
+                    `;
+                    
+                    container.appendChild(item);
+                });
+            }
+            
+            inicializarSistemaAuto();
+            
+            const style = document.createElement('style');
+            style.textContent = `
+                .rotate-fast {
+                    animation: rotateFast 0.5s linear;
+                }
+                
+                @keyframes rotateFast {
+                    from { transform: rotate(0deg); }
+                    to { transform: rotate(360deg); }
+                }
+                
+                .ticket-animation-auto {
+                    animation: ticketPopAuto 0.5s ease-out;
+                }
+                
+                @keyframes ticketPopAuto {
+                    0% { 
+                        transform: scale(0.8) rotate(-5deg); 
+                        opacity: 0; 
+                    }
+                    70% { 
+                        transform: scale(1.05) rotate(2deg); 
+                    }
+                    100% { 
+                        transform: scale(1) rotate(0deg); 
+                        opacity: 1; 
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+            
+            window.addEventListener('beforeunload', function() {
+                if (syncInterval) {
+                    clearInterval(syncInterval);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
